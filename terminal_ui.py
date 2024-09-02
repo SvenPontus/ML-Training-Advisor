@@ -4,8 +4,21 @@ from validation_ml_program import Validation as Vald
 
 r_or_c_list = list()
 
+# func to get user input for regressor or classifier
 def get_user_r_or_c():
-    return Vald.read_in_str_value(Vald.validate_r_or_c, "r for regressor or c for classifier : ")
+    times = 0
+    # 3 attpet to get valid input
+    while times < 3:
+        value = input("Please enter 'r' for regressor or 'c' for classifier: ")
+        if value == "r" or value == "c":
+            return value
+        else:
+            print("Invalid input. You have to choose 'r' or 'c'.")
+            times += 1
+    
+    print("Too many incorrect attempts. Exiting the program.")
+    raise ValueError("Failed to provide valid input after 3 attempts.")
+    
 
 def run_app():
     while True:
@@ -13,7 +26,9 @@ def run_app():
         print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
         print("Is it regressor(r) or classifier(c) model you need to your data? ")
         # User input if regressor or classifier
-        user_r_or_c = get_user_r_or_c()
+
+        user_input = input("Enter 'r' for regressor or 'c' for classifier: ")
+        user_r_or_c = get_user_r_or_c(user_input)
         r_or_c_list.append(user_r_or_c)
         # Get csv file and check if .csv
         try:

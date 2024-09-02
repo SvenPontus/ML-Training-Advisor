@@ -2,6 +2,13 @@
 
 class Validation:
     """My Validation class"""
+
+    @staticmethod
+    def wrong_user_input(value: str):
+        if value == "r" or value == "c":
+            return True
+        else:
+            raise ValueError("You have to choose 'r' or 'c'")
         
     @staticmethod
     def validate_yes_or_no(value:str):
@@ -14,10 +21,6 @@ class Validation:
     @staticmethod
     def validate_int(value:int):
         return isinstance(int(value), int)
-    
-    @staticmethod
-    def validate_r_or_c(value:str):
-        return value == "r" or value == "c"
     
     @staticmethod
     def controll_csv(value):   
