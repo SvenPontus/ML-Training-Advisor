@@ -4,13 +4,16 @@ from validation_ml_program import Validation as Vald
 
 r_or_c_list = list()
 
+def get_user_r_or_c():
+    return Vald.read_in_str_value(Vald.validate_r_or_c, "r for regressor or c for classifier : ")
+
 def run_app():
     while True:
         print("\nFind the best regressor or best classifier model for your data!")
         print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
         print("Is it regressor(r) or classifier(c) model you need to your data? ")
         # User input if regressor or classifier
-        user_r_or_c = Vald.read_in_str_value(Vald.validate_r_or_c, "r for regressor or c for classifier : ")
+        user_r_or_c = get_user_r_or_c()
         r_or_c_list.append(user_r_or_c)
         # Get csv file and check if .csv
         try:
