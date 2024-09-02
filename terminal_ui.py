@@ -1,35 +1,53 @@
 from ml_class_pipeline import *
 from make_pandas import MakePandas
 from validation_ml_program import Validation as Vald
+import sys
 
 r_or_c_list = list()
 
-# func to get user input for regressor or classifier
-def get_user_r_or_c():
-    times = 0
-    # 3 attpet to get valid input
-    while times < 3:
-        value = input("Please enter 'r' for regressor or 'c' for classifier: ")
-        if value == "r" or value == "c":
-            return value
-        else:
-            print("Invalid input. You have to choose 'r' or 'c'.")
-            times += 1
+# Function to validate if user input is 'r' or 'c'
+def validate_r_or_c(user_input):
+    try:
+        return Vald.validate_user_input_r_or_c(user_input)
+    except ValueError as e:
+        print(e)
+
+# code for frontend in terminal
+def get_user_r_or_c_frontend():
+    # User-friendly with 5 tries
+    max_attempts = 5
+    attempts = 0
     
-    print("Too many incorrect attempts. Exiting the program.")
-    raise ValueError("Failed to provide valid input after 3 attempts.")
+    while attempts < max_attempts:
+        print("\nFind the best regressor or best classifier model for your data!")
+        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+        print("Is it a regressor (r) or classifier (c) model you need for your data? ")
+        
+        user_input = input("Please choose 'r' for regressor or 'c' for classifier: ")
+        
+        try:
+            # Validate user input and append it if valid
+            validated_input = validate_r_or_c(user_input)
+            if validated_input:
+                r_or_c_list.append(validated_input)
+                return  # Exit function once a valid input is provided
+        except ValueError as e:
+            print(f"Error: {e}. Please try again.")
+        
+        # Increment attempts after handling the invalid input
+        attempts += 1
     
+    # If the loop exits due to max_attempts being reached, terminate the program
+    print("Too many invalid attempts. The program will now terminate.")
+    sys.exit(1)
+        
+
 
 def run_app():
     while True:
-        print("\nFind the best regressor or best classifier model for your data!")
-        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-        print("Is it regressor(r) or classifier(c) model you need to your data? ")
-        # User input if regressor or classifier
 
-        user_input = input("Enter 'r' for regressor or 'c' for classifier: ")
-        user_r_or_c = get_user_r_or_c(user_input)
-        r_or_c_list.append(user_r_or_c)
+        # User input if regressor or classifier
+        get_user_r_or_c_frontend()
         # Get csv file and check if .csv
         try:
             csv_name = input("Upload your csv file, dont forget .csv : ")

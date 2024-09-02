@@ -2,9 +2,8 @@
 
 class Validation:
     """My Validation class"""
-
     @staticmethod
-    def wrong_user_input(value: str):
+    def validate_user_input_r_or_c(value: str):
         if value == "r" or value == "c":
             return True
         else:
