@@ -1,4 +1,4 @@
-
+import pandas as pd
 
 class Validation:
     """My Validation class"""
@@ -11,13 +11,22 @@ class Validation:
             raise ValueError("You have to choose 'r' or 'c'")
     
     @staticmethod
-    def controll_csv(value):   
+    def control_csv(value):   
         """Validate if the user input is a csv file."""
         if value.endswith(".csv"):
             return value
         else:
             raise ValueError("You have to choose a csv file")
-        
+    """  
+    @staticmethod
+    def control_df(value):
+        # Validate if the user input is a dataframe.
+        if isinstance(value, pd.DataFrame):
+            return value
+        else:
+            raise ValueError("You must provide a valid pandas DataFrame")
+    """ 
+
     @staticmethod
     def validate_yes_or_no(value:str):
         return value in ["yes", "y", "no", "n"]

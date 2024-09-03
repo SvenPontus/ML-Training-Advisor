@@ -2,9 +2,10 @@ import unittest
 from unittest.mock import patch
 
 from validation_ml_program import Validation as Vald
-from terminal_ui import get_user_r_or_c_frontend, r_or_c_list, validate_r_or_c
+from terminal_ui import (get_user_r_or_c_frontend, r_or_c_list,
+                         csv_path_frontend)
 
-# Backend test cases
+# Backend Validation test cases
 class TestValidation(unittest.TestCase):
 
     # Test cases for validate_r_or_c
@@ -27,8 +28,21 @@ class TestValidation(unittest.TestCase):
             Vald.validate_user_input_r_or_c('')
     
     # Test cases for read in the csv path backend
+    def test_validate_csv_path(self):
+        """Test that a valid csv file path is accepted."""
+        self.assertTrue(Vald.control_csv('data.csv'))
+    
+    def test_validate_csv_path_invalid(self):
+        """Test that an invalid csv file path raises a ValueError."""
+        with self.assertRaises(ValueError):
+            Vald.control_csv('data.txt')
+    
+    def test_validate_csv_path_empty(self):
+        """Test that an invalid csv file path raises a ValueError."""
+        with self.assertRaises(ValueError):
+            Vald.control_csv('')
 
-# Frontend test cases
+# Frontend test cases terminal_ui
 class TestFrontend(unittest.TestCase):
 
     # Test cases for get_user_r_or_c_frontend
@@ -60,4 +74,4 @@ class TestFrontend(unittest.TestCase):
 
         self.assertEqual(len(r_or_c_list), 0)
 
-    # Test cases for read in the csv path frontend
+

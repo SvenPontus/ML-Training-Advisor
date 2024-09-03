@@ -1,6 +1,7 @@
 import pandas as pd
 from ml_class_pipeline import MLR, MLC
 import numpy as np
+from validation_ml_program import Validation as Vald
 
 class PandasOperations:
     """This class is made for pandas operations and a mix of other stuff..under construction"""
@@ -21,14 +22,20 @@ class PandasOperations:
         for encoding in encodings:
             for delimiter in delimiters:
                 try:
-                    # Throw away self.df.seek(0)
                     self.df = pd.read_csv(self.df, encoding=encoding, delimiter=delimiter)
+                    
+                    # Check if datafram are correct or empty
+                    if not isinstance(self.df, pd.DataFrame) or self.df.empty:
+                        raise ValueError(f"Failed to read CSV with encoding {encoding} and delimiter '{delimiter}': resulting DataFrame is invalid or empty")
+                    
                     PandasOperations.DF_LIST.append(self.df)
                     return self.df
                 except Exception as e:
                     error_messages.append(f"Failed with encoding {encoding} and delimiter '{delimiter}': {e}")
 
+        # If no valid DataFrame could be read, raise an error
         raise ValueError(f"Unable to read the file with the provided encodings and delimiters. Errors: {error_messages}")
+
     
     # To basic csv side page 
     def info_about_df(self):
@@ -73,7 +80,7 @@ class PandasOperations:
 
     # Check users data regressor or classifier, to terminal app
     @staticmethod
-    def controll_reg_or_cat(target_value,r_or_c):
+    def control_reg_or_cat(target_value,r_or_c):
         df = PandasOperations.DF_LIST[-1]
         column_name = df.columns[target_value]  
         column_dtype = df[column_name].dtype 

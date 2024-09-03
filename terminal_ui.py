@@ -13,7 +13,6 @@ def validate_r_or_c(user_input_r_or_c):
         print(e)
 
 # code for frontend in terminal
-
 def get_user_r_or_c_frontend():
     # User-friendly with 5 tries
     max_attempts = 5
@@ -45,7 +44,7 @@ def get_user_r_or_c_frontend():
 # Function to validate if user input is a csv file
 def validate_csv_path(user_input_csv_path):
     try:
-        return Vald.controll_csv(user_input_csv_path)
+        return Vald.control_csv(user_input_csv_path)
     except ValueError as e:
         print(e)
 
@@ -62,30 +61,16 @@ def csv_path_frontend():
 
 def run_app():
     while True:
-        
         # User input if regressor or classifier
         get_user_r_or_c_frontend()  
-
         # Get csv file and check if .csv
-
         df, csv_name = csv_path_frontend()
-        """
-        # Get csv file and check if .csv
-        try:
-            csv_name = input("Upload your csv file, dont forget .csv : ")
-            csv_file = PO(Vald.controll_csv(csv_name))
-            df = csv_file.read_csv_pandas()
-        except Exception as e:
-            print(e)
-        """
-        #######################################################################
-        print("Which number is your Target Label?")
         # Print out features
         for nr,_ in enumerate(df.columns):
             print(f"{nr} {_}")
         target_label = Vald.read_in_int_value(Vald.validate_int, "Enter your choice : ")
 
-        control_reg_or_cat = PO.controll_reg_or_cat(target_value=target_label,r_or_c=r_or_c_list[-1])
+        control_reg_or_cat = PO.control_reg_or_cat(target_value=target_label,r_or_c=r_or_c_list[-1])
         print(control_reg_or_cat)
         # Quit program if user load wrong csv for the operation
         if "ERROR!" in control_reg_or_cat[:6]:
