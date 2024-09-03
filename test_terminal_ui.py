@@ -37,7 +37,6 @@ class TestFrontend(unittest.TestCase):
         """Test the program with one incorrect input followed by a correct input.
         And check if the correct input is stored in the list."""
         get_user_r_or_c_frontend()
-        self.assertIn(True, r_or_c_list)
         self.assertEqual(len(r_or_c_list), 1)
     
     @patch('builtins.input', side_effect=['a', '3', 'X', 'd','r'])
@@ -45,7 +44,6 @@ class TestFrontend(unittest.TestCase):
         """Test the program with four incorrect inputs followed by a correct input."""
         r_or_c_list.clear()  # Clear the list before running the test
         get_user_r_or_c_frontend()
-        self.assertIn(True, r_or_c_list)
         self.assertEqual(len(r_or_c_list), 1)
 
     

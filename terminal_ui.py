@@ -3,7 +3,7 @@ from pandas_operations import PandasOperations as PO
 from validation_ml_program import Validation as Vald
 import sys
 
-r_or_c_list = list()
+r_or_c_list = []
 
 # Function to validate if user input is 'r' or 'c'
 def validate_r_or_c(user_input_r_or_c):
@@ -13,6 +13,7 @@ def validate_r_or_c(user_input_r_or_c):
         print(e)
 
 # code for frontend in terminal
+
 def get_user_r_or_c_frontend():
     # User-friendly with 5 tries
     max_attempts = 5
@@ -25,16 +26,16 @@ def get_user_r_or_c_frontend():
         
         user_input = input("Please choose 'r' for regressor or 'c' for classifier: ")
         
+        validated_input = validate_r_or_c(user_input)
         try:
-            # Validate user input and append it if valid
-            validated_input = validate_r_or_c(user_input)
             if validated_input:
-                r_or_c_list.append(validated_input)
+                r_or_c_list.append(user_input)
                 return  # Exit function once a valid input is provided
-        except ValueError as e:
-            print(f"Error: {e}. Please try again.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
         
-        # Increment attempts after handling the invalid input
+        # If we reached here, the input was invalid
+        print("Invalid input. Please try again.")
         attempts += 1
     
     # If the loop exits due to max_attempts being reached, terminate the program
@@ -61,16 +62,23 @@ def csv_path_frontend():
 
 def run_app():
     while True:
-
+        
         # User input if regressor or classifier
-        get_user_r_or_c_frontend()
+        get_user_r_or_c_frontend()  
+
+        # Get csv file and check if .csv
+
+        df, csv_name = csv_path_frontend()
+        """
         # Get csv file and check if .csv
         try:
             csv_name = input("Upload your csv file, dont forget .csv : ")
-            csv_file = PO(validate_csv_path(csv_name))
+            csv_file = PO(Vald.controll_csv(csv_name))
             df = csv_file.read_csv_pandas()
         except Exception as e:
             print(e)
+        """
+        #######################################################################
         print("Which number is your Target Label?")
         # Print out features
         for nr,_ in enumerate(df.columns):
