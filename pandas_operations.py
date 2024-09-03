@@ -2,7 +2,7 @@ import pandas as pd
 from ml_class_pipeline import MLR, MLC
 import numpy as np
 
-class MakePandas:
+class PandasOperations:
     """This class is made for pandas operations and a mix of other stuff..under construction"""
     # I store df, Best_model and final_model in this way because I didnt find a better solution right now 
     DF_LIST = list() 
@@ -23,7 +23,7 @@ class MakePandas:
                 try:
                     # Throw away self.df.seek(0)
                     self.df = pd.read_csv(self.df, encoding=encoding, delimiter=delimiter)
-                    MakePandas.DF_LIST.append(self.df)
+                    PandasOperations.DF_LIST.append(self.df)
                     return self.df
                 except Exception as e:
                     error_messages.append(f"Failed with encoding {encoding} and delimiter '{delimiter}': {e}")
@@ -51,7 +51,7 @@ class MakePandas:
     @staticmethod    
     def do_dummies(user_y_label):
         # Pick up the latest df from user
-        df = MakePandas.DF_LIST[-1]
+        df = PandasOperations.DF_LIST[-1]
 
         # Target Label from user
         y_label_name = df.columns[user_y_label]
@@ -68,13 +68,13 @@ class MakePandas:
                 X = pd.get_dummies(X, columns=[col], drop_first=True)
 
         df_dummies = pd.concat([y, X], axis=1)
-        MakePandas.DF_LIST.append(df_dummies)
+        PandasOperations.DF_LIST.append(df_dummies)
     
 
     # Check users data regressor or classifier, to terminal app
     @staticmethod
     def controll_reg_or_cat(target_value,r_or_c):
-        df = MakePandas.DF_LIST[-1]
+        df = PandasOperations.DF_LIST[-1]
         column_name = df.columns[target_value]  
         column_dtype = df[column_name].dtype 
         if r_or_c == "r":
@@ -96,7 +96,7 @@ class MakePandas:
     @staticmethod
     def ready_for_ml_and_dummies(nr_user_y_label):
         # Pick up the latest df from user
-        df = MakePandas.DF_LIST[-1]
+        df = PandasOperations.DF_LIST[-1]
         # Target Label from user
         y_label_name = df.columns[nr_user_y_label]
         # Drop y label, for get X features
@@ -131,8 +131,8 @@ class MakePandas:
     # Send the latest uploaded csv file like a df
     @staticmethod
     def send_df():
-        if MakePandas.DF_LIST:
-            return MakePandas.DF_LIST[-1]
+        if PandasOperations.DF_LIST:
+            return PandasOperations.DF_LIST[-1]
         return None
     
     # several step in this method, choose target, split data and call ml class
@@ -140,7 +140,7 @@ class MakePandas:
     def pick_up_target_split_and_call_ml(nr_user_y_label, r_or_c):
         if r_or_c == "r":
             # Pick up latest df from user
-            df = MakePandas.DF_LIST[-1]
+            df = PandasOperations.DF_LIST[-1]
             # Target Label from user
             y_label_name = df.columns[nr_user_y_label]
             # Split data
@@ -190,17 +190,17 @@ class MakePandas:
 
             # Send best model to list, then dump when user want
             if best_model_name == 'Linear Regression':
-                MakePandas.FINAL_MODEL.append(LiR_mlr)
+                PandasOperations.FINAL_MODEL.append(LiR_mlr)
             elif best_model_name == 'Lasso':
-                MakePandas.FINAL_MODEL.append(lasso_mlr)
+                PandasOperations.FINAL_MODEL.append(lasso_mlr)
             elif best_model_name == 'Ridge':
-                MakePandas.FINAL_MODEL.append(ridge_mlr)
+                PandasOperations.FINAL_MODEL.append(ridge_mlr)
             elif best_model_name == 'ElasticNet':
-                MakePandas.FINAL_MODEL.append(elasticnet_mlr)
+                PandasOperations.FINAL_MODEL.append(elasticnet_mlr)
             elif best_model_name == 'SVR':
-                MakePandas.FINAL_MODEL.append(svr_mlr)
+                PandasOperations.FINAL_MODEL.append(svr_mlr)
 
-            MakePandas.BEST_MODEL.append(best_model_and_score)
+            PandasOperations.BEST_MODEL.append(best_model_and_score)
             
             # Return all models cost functions like strings
             return f"\nLinear Regression\n{LiR_mlr_cost}\n\nLasso\n{lasso_mlr_cost}\n\n"\
@@ -208,7 +208,7 @@ class MakePandas:
             f"SVR\n{svr_mlr_cost}\n\n"            
 
         elif r_or_c == "c":
-            df = MakePandas.DF_LIST[-1]
+            df = PandasOperations.DF_LIST[-1]
             y_label_name = df.columns[nr_user_y_label]
             y = df[y_label_name]
             X = df.drop(y_label_name, axis=1)
@@ -241,13 +241,13 @@ class MakePandas:
             best_model_and_score = f"{best_model_name} {best_accuracy_score_c.round(2)}"
 
             if best_model_name == 'Logistic Regression':
-                MakePandas.FINAL_MODEL.append(LoR_mlc)
+                PandasOperations.FINAL_MODEL.append(LoR_mlc)
             elif best_model_name == 'KNN':
-                MakePandas.FINAL_MODEL.append(knn_mlc)
+                PandasOperations.FINAL_MODEL.append(knn_mlc)
             elif best_model_name == 'SVC':
-                MakePandas.FINAL_MODEL.append(svc_mlc)
+                PandasOperations.FINAL_MODEL.append(svc_mlc)
 
-            MakePandas.BEST_MODEL.append(best_model_and_score)
+            PandasOperations.BEST_MODEL.append(best_model_and_score)
 
             return f"\nLogistic regression \n{LoR_mlc_cost}\n\n"\
             f"KNN\n{knn_mlc_cost}\n\nSVC\n{svc_mlc_cost}"
@@ -255,12 +255,12 @@ class MakePandas:
     # Create the fina model       
     @staticmethod
     def dump_best_model_final():
-       final_model = MakePandas.FINAL_MODEL[-1]
+       final_model = PandasOperations.FINAL_MODEL[-1]
        final_model.dump_best_model()
         
     # Return best model
     @staticmethod
     def send_best_model_score():
-        return f"{MakePandas.BEST_MODEL[-1]} "
+        return f"{PandasOperations.BEST_MODEL[-1]} "
 
 
