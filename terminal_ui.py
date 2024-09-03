@@ -65,7 +65,12 @@ def run_app():
         # User input if regressor or classifier
         get_user_r_or_c_frontend()
         # Get csv file and check if .csv
-        df, csv_name = csv_path_frontend()
+        try:
+            csv_name = input("Upload your csv file, dont forget .csv : ")
+            csv_file = PO(validate_csv_path(csv_name))
+            df = csv_file.read_csv_pandas()
+        except Exception as e:
+            print(e)
         print("Which number is your Target Label?")
         # Print out features
         for nr,_ in enumerate(df.columns):
