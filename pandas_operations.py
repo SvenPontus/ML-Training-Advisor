@@ -97,7 +97,6 @@ class PandasOperations:
                 return f"It is a categorical value."
             else:
                 return f"ERROR! It is not a categorical value"
-            
 
     # Controll nan values and if the csv file is ready for ml class
     @staticmethod

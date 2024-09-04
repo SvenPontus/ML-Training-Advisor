@@ -19,10 +19,11 @@ def get_user_r_or_c_frontend():
     attempts = 0
     
     while attempts < max_attempts:
-        print("\nFind the best regressor or best classifier model for your data!")
-        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-        print("Is it a regressor (r) or classifier (c) model you need for your data? ")
-        
+        print(
+            "\nFind the best regressor or best classifier model for your data!\n"
+            "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
+            "Is it a regressor (r) or classifier (c) model you need for your data? "
+        )
         user_input = input("Please choose 'r' for regressor or 'c' for classifier: ")
         
         validated_input = validate_r_or_c(user_input)
@@ -57,6 +58,14 @@ def csv_path_frontend():
         return df, csv_name
     except Exception as e:
         print(e)
+
+
+# TEST THIS FUNCTION
+def print_out_features(df):
+    for nr,_ in enumerate(df.columns):
+        print(f"{nr} {_}")
+    target_label = Vald.read_in_int_value(Vald.validate_int, "Enter your choice : ")
+    return target_label
     
 
 def run_app():
@@ -66,9 +75,7 @@ def run_app():
         # Get csv file and check if .csv
         df, csv_name = csv_path_frontend()
         # Print out features
-        for nr,_ in enumerate(df.columns):
-            print(f"{nr} {_}")
-        target_label = Vald.read_in_int_value(Vald.validate_int, "Enter your choice : ")
+        target_label = print_out_features(df)
 
         control_reg_or_cat = PO.control_reg_or_cat(target_value=target_label,r_or_c=r_or_c_list[-1])
         print(control_reg_or_cat)

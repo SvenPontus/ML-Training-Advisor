@@ -7,6 +7,13 @@ from pandas_operations import PandasOperations as PO
 
 class TestPO(unittest.TestCase):
 
+    def setUp(self):
+        # Reset the DF_LIST before every test to ensure isolation
+        PO.DF_LIST = []
+    
+    def tearDown(self):
+        pass
+
     def test_init(self):
         # Test the __init__ method
         po = PO()
@@ -62,3 +69,52 @@ class TestPO(unittest.TestCase):
 
         # Verify that the ValueError contains appropriate error messages
         self.assertIn("Unable to read the file with the provided encodings and delimiters", str(context.exception))
+
+    # Test control_re_or_cat
+    def test_control_reg_or_cat(self):
+        # Mock DataFrame
+        mock_df_r = pd.DataFrame({
+            "sales": [100, 200, 300],
+            "1": [1, 2, 3],
+            "2": [4, 5, 6],
+            "3": [4, 5, 6],
+        })
+
+        mock_df_c = pd.DataFrame({
+            "sales": ["high", "low", "medium"],
+            "1": [1, 2, 3],
+            "2": [4, 5, 6],
+            "3": [4, 5, 6],
+        })
+
+        # Make sure DF_LIST is reset before the test
+        PO.DF_LIST = [mock_df_r]
+
+        # Create instance of PO without any arguments
+        po_instance = PO()  
+
+        # Test for continuous value (regression)
+        result_reg = po_instance.control_reg_or_cat(1, "r")
+        expected_reg = "It is a continuous value."
+        self.assertEqual(result_reg, expected_reg)
+
+        PO.DF_LIST = []
+        PO.DF_LIST = [mock_df_c]
+
+        # Test for categorical value (classification)
+        result_cat = po_instance.control_reg_or_cat(0, "c")
+        expected_cat = "It is a categorical value."
+        self.assertEqual(result_cat, expected_cat)
+
+        PO.DF_LIST = []
+        PO.DF_LIST = [mock_df_r]
+        
+        # Test for incorrect type (neither "r" nor "c")
+        result_invalid_type = po_instance.control_reg_or_cat(0, "c")
+        expected_invalid_type = "ERROR! It is not a categorical value"
+        self.assertEqual(result_invalid_type, expected_invalid_type)
+
+        # TEST MORE...
+
+
+        
