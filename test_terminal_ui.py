@@ -45,33 +45,31 @@ class TestValidation(unittest.TestCase):
 # Frontend test cases terminal_ui
 class TestFrontend(unittest.TestCase):
 
-    # Test cases for get_user_r_or_c_frontend
-    @patch('builtins.input', side_effect=['x', 'c'])
-    def test_run_app_invalid_then_valid_input(self, mock_input):
-        """Test the program with one incorrect input followed by a correct input.
-        And check if the correct input is stored in the list."""
-        get_user_r_or_c_frontend()
-        self.assertEqual(len(r_or_c_list), 1)
-    
-    @patch('builtins.input', side_effect=['a', '3', 'X', 'd','r'])
-    def test_run_app_multiple_invalid_then_valid_input(self, mock_input):
-        """Test the program with four incorrect inputs followed by a correct input."""
-        r_or_c_list.clear()  # Clear the list before running the test
-        get_user_r_or_c_frontend()
-        self.assertEqual(len(r_or_c_list), 1)
-
-    
-    @patch('builtins.input', side_effect=['a', '_____', 'z', '*', '?'])
-    def test_run_app_terminate_after_max_attempts(self, mock_input):
-        """Test if the system terminates after exceeding the maximum number of attempts."""
-        # clean list
+    def setUp(self):
+        # Clear the list before each test
         r_or_c_list.clear()
 
-        with self.assertRaises(SystemExit) as cm:
+    # Test cases for get_user_r_or_c_frontend
+    def test_run_app_invalid_then_valid_input(self):
+        """Test the program with one incorrect input followed by a correct input.
+        And check if the correct input is stored in the list."""
+        with patch('builtins.input', side_effect=['x', 'c']):
             get_user_r_or_c_frontend()
+        self.assertEqual(len(r_or_c_list), 1)
+    
+    def test_run_app_multiple_invalid_then_valid_input(self):
+        """Test the program with four incorrect inputs followed by a correct input."""
+        with patch('builtins.input', side_effect=['a', '3', 'X', 'd','r']):
+            get_user_r_or_c_frontend()
+        self.assertEqual(len(r_or_c_list), 1)
 
-        self.assertEqual(cm.exception.code, 1)
+    def test_run_app_terminate_after_max_attempts(self):
+        """Test if the system terminates after exceeding the maximum number of attempts."""
+        with patch('builtins.input', side_effect=['a', '_____', 'z', '*', '?']):
+            with self.assertRaises(SystemExit) as cm:
+                get_user_r_or_c_frontend()
 
-        self.assertEqual(len(r_or_c_list), 0)
+            self.assertEqual(cm.exception.code, 1)
+            self.assertEqual(len(r_or_c_list), 0)
 
 

@@ -1,7 +1,7 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, call
+import pandas.testing as pdt
 import pandas as pd
-from io import StringIO
 
 from pandas_operations import PandasOperations as PO
 
@@ -12,44 +12,50 @@ class TestPO(unittest.TestCase):
         po = PO()
         self.assertIsNone(po.df)
 
-    @patch('pandas.read_csv')
-    def test_read_csv_pandas(self, mock_read_csv):
-        # Create a mock DataFrame that is returned by pd.read_csv
-        mock_df = pd.DataFrame({
-            'col1': [1, 2, 3],
-            'col2': [4, 5, 6],
-            'col3': [7, 8, 9]
-        })
-        
-        # Setup so that mock_read_csv returns mock_df
-        mock_read_csv.return_value = mock_df
+    def test_read_csv_pandas(self):
+        # Patcha pandas.read_csv so we can control what is returned
+        with patch('pandas.read_csv') as mock_read_csv:
+            # Create a mock DataFrame to return
+            df = pd.DataFrame({
+                'col1': [1, 2, 3],
+                'col2': [4, 5, 6],
+                'col3': [7, 8, 9]
+            })
 
-        # Simulate a CSV file via StringIO
-        csv_content = StringIO("col1,col2,col3\n1,4,7\n2,5,8\n3,6,9")
-        
-        # Instantiate the PO class with the simulated CSV content
-        po = PO(df=csv_content)
-        
-        # Test the read_csv_pandas method
-        df = po.read_csv_pandas()
+            # Set up read_csv to return df
+            mock_read_csv.return_value = df
 
-        # Verify that the DataFrame is returned correctly
-        self.assertIsNotNone(df)
-        self.assertEqual(len(df), 3)  # Check that the number of rows is correct
-        self.assertEqual(list(df.columns), ['col1', 'col2', 'col3'])  # Check that the column names are correct
+            # Create a instance of your class (assuming it is named PO here)
+            po = PO(df=None)
 
-        # Check that mock_read_csv was called with the expected parameters
-        mock_read_csv.assert_called()  # Verifies that pandas.read_csv was indeed called
+            # Call the method 
+            result = po.read_csv_pandas()
 
-        # Check that the DataFrame is added to the DF_LIST
-        self.assertIn(df, PO.DF_LIST)
+            # Check that read_csv was called with the different combinations of encodings and delimiters
+            expected_call = call(None, encoding='utf-8', delimiter=',')  
+            mock_read_csv.assert_called_with(None, encoding='utf-8', delimiter=',')
 
-        # Check that mock_read_csv was called with the correct arguments
-        mock_read_csv.assert_called_with(csv_content, encoding='utf-8', delimiter=',')
+            # Check that the returned DataFrame is the same as the one we created
+            pdt.assert_frame_equal(result, df)
+
+            # Check that the DataFrame was saved in the PandasOperations.DF_LIST
+            self.assertIn(df, PO.DF_LIST)
+
+    def test_read_csv_pandas_fails(self):
+        # If all attempts to read the CSV fail
+        with patch('pandas.read_csv', side_effect=Exception("Mocked failure")):
+            po = PO(df=None)
+
+            # Check that a ValueError is raised after all failed attempts
+            with self.assertRaises(ValueError) as cm:
+                po.read_csv_pandas()
+
+            self.assertIn("Unable to read the file", str(cm.exception))
+
 
     def test_read_csv_pandas_failure(self):
         # Test the scenario where reading the CSV fails for all encodings and delimiters
-        po = PO(df=StringIO("INVALID CONTENT"))
+        po = PO(df="INVALID CONTENT")
 
         with self.assertRaises(ValueError) as context:
             po.read_csv_pandas()
