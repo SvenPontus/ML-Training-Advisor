@@ -1,8 +1,8 @@
-from run_ui import RunUi
+from run_ui import RunUI
 
 
 
 if __name__ == "__main__":
-    program = RunUi()
+    program = RunUI()
     program.run()
 
