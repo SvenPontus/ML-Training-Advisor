@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class DataProcessing:
     """Class for handling CSV data and preparing it for machine learning models."""
@@ -80,6 +81,24 @@ class DataProcessing:
             return messages if messages else "Data is ready for machine learning."
         else:
             raise ValueError("DataFrame not initialized")
+    
+    @staticmethod
+    def control_reg_or_cat(target_value,r_or_c, df):
+        column_name = df.columns[target_value]  
+        column_dtype = df[column_name].dtype 
+        if r_or_c == "r":
+            # np.number have every int and float, I hope.. not shure 
+            if np.issubdtype(column_dtype, np.number):
+                return f"It is a continuous value."
+            else:
+                return f"ERROR! It is not a continuous value"
+
+        # Check for classification task
+        elif r_or_c == "c":
+            if not np.issubdtype(column_dtype, np.number):
+                return f"It is a categorical value."
+            else:
+                return f"ERROR! It is not a categorical value"
 
     # DONT NEED? 
     def split_data(self, X, y, test_size=0.33, random_state=101):

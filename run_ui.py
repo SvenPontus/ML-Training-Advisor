@@ -6,9 +6,10 @@ from validationbackend import Validation as Vald
 class RunUI():
 
     def __init__(self):
-        self.r_or_c_list = []
+        self.r_or_c = None
         self.csv_file = None # Object from DP
         self.df = None
+        self.target = None
 
     def get_r_or_c_input(self):
         """get user r or c """  
@@ -21,7 +22,7 @@ class RunUI():
             user_input = input("Please choose 'r' for regressor or 'c' for classifier: ")
             
             if user_input in ['r', 'c']:
-                self.r_or_c_list.append(user_input)
+                self.r_or_c = user_input
                 break
             else:
                 print("Invalid input. Only (r) or (c) Please try again.")
@@ -45,13 +46,19 @@ class RunUI():
 
         while True:
             try:
-                target = int(input("What is the dependent target? "))
-                return target
+                self.target = int(input("What is the dependent target? "))
+                break
             except Exception as e:
                 print(e)
+    
+    def check_continuing_or_Categorical(self):
+        a = DP.control_reg_or_cat(self.target, self.r_or_c, self.df)
+        print(a) # Fixa med true och false snyggare i return, sen skapa
+        # sen gör utfallen med print här i functionen
             
 
     def run(self):
         self.get_r_or_c_input()
         self.read_in_csv()
         self.read_in_dependent_target()
+        self.check_continuing_or_Categorical()
