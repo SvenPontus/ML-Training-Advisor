@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 class DataProcessing:
     """Class for handling CSV data and preparing it for machine learning models."""

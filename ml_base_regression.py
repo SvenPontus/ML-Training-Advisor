@@ -3,10 +3,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+import numpy as np
 
 
-class MLBase(ABC):
-    """Abstract base class for ML pipelines - regression or classification."""
+class MLBaseRegression(ABC):
+    """Abstract base class for ML pipelines - regression"""
     
     def __init__(self, X, y, test_size=0.33, random_state=101):
         """Initialize the MLBase with training and test data."""
@@ -49,10 +50,15 @@ class MLBase(ABC):
         else:
             raise ValueError("Model not trained")
 
-    @abstractmethod
+    
     def evaluate(self):
-        """Evaluate the model using relevant metrics."""
-        pass
+        """Evaluates the model using relevant metrics for regression."""
+        from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+        mae = mean_absolute_error(self.y_test, self.y_pred)
+        mse = mean_squared_error(self.y_test, self.y_pred)
+        rmse = np.sqrt(mse)
+        r2 = r2_score(self.y_test, self.y_pred)
+        return f"MAE: {mae}, MSE: {mse}, RMSE: {rmse}, R2 Score: {r2}"
 
     def get_best_params(self):
         """Return the best hyperparameters after training."""
