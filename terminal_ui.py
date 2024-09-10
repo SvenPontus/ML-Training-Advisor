@@ -1,7 +1,5 @@
-from ml_class_pipeline import *
 from pandas_operations import PandasOperations as PO
 from validation_ml_program import Validation as Vald
-import sys
 
 r_or_c_list = []
 
@@ -13,12 +11,8 @@ def validate_r_or_c(user_input_r_or_c):
         print(e)
 
 # code for frontend in terminal
-def get_user_r_or_c_frontend():
-    # User-friendly with 5 tries
-    max_attempts = 5
-    attempts = 0
-    
-    while attempts < max_attempts:
+def get_user_r_or_c_frontend():    
+    while True:
         print(
             "\nFind the best regressor or best classifier model for your data!\n"
             "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n"
@@ -30,18 +24,13 @@ def get_user_r_or_c_frontend():
         try:
             if validated_input:
                 r_or_c_list.append(user_input)
-                return  # Exit function once a valid input is provided
+                break
         except Exception as e:
             print(f"An error occurred: {e}")
         
         # If we reached here, the input was invalid
         print("Invalid input. Please try again.")
-        attempts += 1
     
-    # If the loop exits due to max_attempts being reached, terminate the program
-    print("Too many invalid attempts. The program will now terminate.")
-    sys.exit(1)
-
 # Function to validate if user input is a csv file
 def validate_csv_path(user_input_csv_path):
     try:

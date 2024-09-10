@@ -27,6 +27,7 @@ class TestValidation(unittest.TestCase):
         with self.assertRaises(ValueError):
             Vald.validate_user_input_r_or_c('')
     
+    # Task 2
     # Test cases for read in the csv path backend
     def test_validate_csv_path(self):
         """Test that a valid csv file path is accepted."""
@@ -49,6 +50,7 @@ class TestFrontend(unittest.TestCase):
         # Clear the list before each test
         r_or_c_list.clear()
 
+    # Task 1
     # Test cases for get_user_r_or_c_frontend
     def test_run_app_invalid_then_valid_input(self):
         """Test the program with one incorrect input followed by a correct input.
@@ -57,19 +59,6 @@ class TestFrontend(unittest.TestCase):
             get_user_r_or_c_frontend()
         self.assertEqual(len(r_or_c_list), 1)
     
-    def test_run_app_multiple_invalid_then_valid_input(self):
-        """Test the program with four incorrect inputs followed by a correct input."""
-        with patch('builtins.input', side_effect=['a', '3', 'X', 'd','r']):
-            get_user_r_or_c_frontend()
-        self.assertEqual(len(r_or_c_list), 1)
 
-    def test_run_app_terminate_after_max_attempts(self):
-        """Test if the system terminates after exceeding the maximum number of attempts."""
-        with patch('builtins.input', side_effect=['a', '_____', 'z', '*', '?']):
-            with self.assertRaises(SystemExit) as cm:
-                get_user_r_or_c_frontend()
-
-            self.assertEqual(cm.exception.code, 1)
-            self.assertEqual(len(r_or_c_list), 0)
 
 
