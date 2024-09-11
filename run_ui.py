@@ -18,6 +18,7 @@ class RunUI():
         self.csv_file = None # Object from DP
         self.df = None
         self.target = None
+        self.best_model = None
 
     def get_r_or_c_input(self):
         """get user r or c """  
@@ -82,42 +83,48 @@ class RunUI():
             print("Data is ready for machine learning.\n"
                   "\nPress enter or any key to continue.\n"
                   "And wait for results.")
+            input("")
             return True
         else:
             print(f"You need to fix this->{self.csv_file.messages} \n"
                   f"and run the program again.")
                  
     def start_ml(self):
-        self.df
         if self.r_or_c == "r":            
             X, y = self.csv_file.prepare_for_ml(self.target)
-            r2_LRM = self.auto_use_model(LRM, X, y)
-            r2_LM = self.auto_use_model(LM, X, y)
-            r2_RM = self.auto_use_model(RM, X, y)
-            r2_ENM = self.auto_use_model(ENM, X, y)
-            r2_SVRM = self.auto_use_model(SVRM, X, y)
-            r2_ANN = self.auto_use_model(ANN, X, y)
+            r2_LRM, model_LRM, str_LRM = self.auto_use_model(LRM, X, y, "Linear Regression Model")
+            r2_LM, model_LM, str_LM = self.auto_use_model(LM, X, y, "Lasso Regression Model")
+            r2_RM, model_RM, str_RM = self.auto_use_model(RM, X, y, "Ridge Regression Model")
+            r2_ENM, model_ENM, str_ENM = self.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
+            r2_SVRM, model_SVRM, str_SVRM = self.auto_use_model(SVRM, X, y, "SVR Model")
+            r2_ANN, model_ANN, str_ANN = self.auto_use_model(ANN, X, y, "Artificial Neural Network (ANN)")
             best_model, best_r2 = self.calculate_best_r2_score(r2_LRM, r2_LM, r2_RM, r2_ENM, r2_SVRM, r2_ANN)
-            print(f"Best model is: {best_model} with the best r2 score: {best_r2}.")
+            self.best_model = best_model
+            print(f"\nBest model is: {best_model} with the best R2 score: {best_r2}.")
 
         elif self.r_or_c == "c":
             X, y = self.csv_file.prepare_for_ml(self.target)
-            accuracy_LoRM = self.auto_use_model(LoRM, X, y)
-            accuracy_KNNM = self.auto_use_model(KNNM, X, y)
-            accuracy_SVCM = self.auto_use_model(SVCM, X, y)
-            #accuracy_ANN = self.auto_use_model(ANN(loss='categorical_crossentropy'), X, y) # Easy way, Limit with time
+            accuracy_LoRM, model_LoRM, str_LoRM = self.auto_use_model(LoRM, X, y, "Logistic Regression Model")
+            accuracy_KNNM, model_KNNM, str_KNNM = self.auto_use_model(KNNM, X, y, "K-Nearest Neighbors (KNN)")
+            accuracy_SVCM, model_SVCM, str_SVCM = self.auto_use_model(SVCM, X, y, "Support Vector Classifier (SVC)")
+            #accuracy_ANN = self.auto_use_model(ANN(loss='categorical_crossentropy'), X, y) # The time is limited....
+
+            # DET ÄR NR 2 här som är instansen av modellen: accuracy_LoRM, ->model_LoRM<- bara den som kan dumpas
+            
             best_model, best_accuracy = self.calculate_best_accuracy_score(accuracy_LoRM, accuracy_KNNM, accuracy_SVCM) # accuracy_ANN
-            print(f"Best model is: {best_model} with the best accuracy score: {best_accuracy}.")
+            self.best_model = best_model
+            print(f"\nBest model is: {best_model} with the best accuracy score: {best_accuracy}.")
                
-    def auto_use_model(self, model, X, y):
+    def auto_use_model(self, model, X, y, model_name):
         model = model(X, y)
         model.train()
         model.predict()
-        model.evaluate()
+        evaluation = model.evaluate()
+        print(f"\nModel: {model_name}\n{evaluation}")
         if self.r_or_c == "r": 
-            return model.r2_score
+            return model.r2_score, model, model_name
         elif self.r_or_c == "c":
-            return model.accuracy
+            return model.accuracy, model, model_name
     
     def calculate_best_r2_score(self, LRM, LM, RM, ENM, SVRM, ANN):
         models = {
@@ -141,11 +148,31 @@ class RunUI():
         best_model = max(models, key=models.get)
         return best_model, models[best_model]
     
+    def dump_best_model(self):
+        while True:
+            user_input = input(f"\nDo you want to save the best model ({self.best_model})? (y/n): ")
+            if user_input.lower() == 'y':
+                filename = input("Enter the filename to save the model: ") + ".h5"
+                
+                try:
+                    self.best_model.dump_model(filename)
+                    print(f"Model saved as {filename}.")
+                    break 
+                except Exception as e:
+                    print(f"Error saving model: {e}")
+            elif user_input.lower() == 'n':
+                print("The model will not be saved.")
+                break
+            else:
+                print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+    
     def run(self):
         self.get_r_or_c_input()
         self.read_in_csv()
         self.read_in_dependent_target()
         if self.check_if_ready_for_ml():
             self.start_ml()
-        print(" ASK TO DUMP THE BEST MODEL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            self.dump_best_model() 
+        
 

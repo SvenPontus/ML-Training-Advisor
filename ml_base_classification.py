@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+import numpy as np
 
 
 class MLBaseClassification(ABC):
@@ -57,8 +58,23 @@ class MLBaseClassification(ABC):
         self.accuracy = accuracy_score(self.y_test, self.y_pred)
         confusion = confusion_matrix(self.y_test, self.y_pred)
         report = classification_report(self.y_test, self.y_pred)
-        return f"Accuracy: {self.accuracy}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
+        return f"Accuracy: {self.accuracy.round(3)}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
 
     def get_best_params(self):
         """Return the best hyperparameters after training."""
         return self.best_model_params
+    
+    # not tried
+    def dump_model(self, filename):
+        """Train the model on the entire dataset and save the trained model to a file."""
+        import joblib
+
+        X_full = np.vstack((self.X_train, self.X_test))
+        y_full = np.hstack((self.y_train, self.y_test))
+        
+        pipeline = Pipeline([('scaler', self.scaler), ('model', self.define_model())])
+        pipeline.fit(X_full, y_full)
+        
+        joblib.dump(pipeline, filename)
+        print(f"Model trained on full dataset and saved to {filename}")
+
