@@ -7,6 +7,7 @@ class DataProcessing:
     def __init__(self, filepath=None):
         self.df = None
         self.filepath = filepath
+        self.messages = []
 
     def read_csv(self):
         """Reads a CSV file and handles different encodings and delimiters."""
@@ -62,23 +63,22 @@ class DataProcessing:
         """Checks if the data is ready for machine learning."""
         if self.df is not None:
             X = self.df.drop(self.df.columns[target_column_index], axis=1)
-            messages = []
 
             # Check for NaN values
             nan_columns = X.columns[X.isna().any()].tolist()
             if nan_columns:
-                messages.append(f"Columns with NaN values: {nan_columns}")
+                self.messages.append(f"Columns with NaN values: {nan_columns}")
 
             # Check non-numeric columns
             non_numeric_columns = [col for col in X.columns if not pd.api.types.is_numeric_dtype(X[col])]
             for col in non_numeric_columns:
                 unique_values = X[col].nunique()
                 if unique_values > 2:
-                    messages.append(f"Column {col} has {unique_values} unique values, which may need encoding.")
+                    self.messages.append(f"Column {col} has {unique_values} unique values, which may need encoding.")
                 elif unique_values == 2:
-                    messages.append(f"Column {col} is binary and can be converted to dummy variables.")
+                    self.messages.append(f"Column {col} is binary and can be converted to dummy variables.")
 
-            return messages if messages else "Data is ready for machine learning."
+            return self.messages if self.messages else True
         else:
             raise ValueError("DataFrame not initialized")
     

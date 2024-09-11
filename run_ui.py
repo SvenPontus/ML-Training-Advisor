@@ -66,13 +66,20 @@ class RunUI():
                 print("Wrong target for this data type. Please try again.")
         except Exception as e:
             print(e)
+    
 
+    def check_if_ready_for_ml(self):
+        messege_or_ready = self.csv_file.check_data_for_ml(self.target)
+        if messege_or_ready == True:
+            print("Data is ready for machine learning.")
+        else:
+            print(f"Fix this->{self.csv_file.messages} \nand you need to run "
+                  f"the program again")
 
             
-
     def run(self):
         self.get_r_or_c_input()
         self.read_in_csv()
         self.read_in_dependent_target()
-        print(self.csv_file.check_data_for_ml(3)) # !!!!!!!!!!!!!!!!
+        self.check_if_ready_for_ml()
 
