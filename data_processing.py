@@ -82,23 +82,26 @@ class DataProcessing:
         else:
             raise ValueError("DataFrame not initialized")
     
-    @staticmethod
-    def control_reg_or_cat(target_value,r_or_c, df):
+    def control_reg_or_cat(target_value, r_or_c, df):
+        """Checks if the target value is continuous or categorical."""
         column_name = df.columns[target_value]  
         column_dtype = df[column_name].dtype 
-        if r_or_c == "r":
-            # np.number have every int and float, I hope.. not shure 
-            if np.issubdtype(column_dtype, np.number):
-                return f"It is a continuous value."
-            else:
-                return f"ERROR! It is not a continuous value"
 
-        # Check for classification task
-        elif r_or_c == "c":
-            if not np.issubdtype(column_dtype, np.number):
-                return f"It is a categorical value."
+        if r_or_c == "r":
+            if np.issubdtype(column_dtype, np.number):
+                return True
             else:
-                return f"ERROR! It is not a categorical value"
+                return False  # Return False if it is not a numeric value
+
+        elif r_or_c == "c":
+            # Here we check if it is NOT a numeric value
+            if not np.issubdtype(column_dtype, np.number):
+                return True
+            else:
+                return False  
+
+        else:
+            raise ValueError(f"Error in control_reg_or_cat.")
 
     # DONT NEED? 
     def split_data(self, X, y, test_size=0.33, random_state=101):

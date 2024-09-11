@@ -47,18 +47,32 @@ class RunUI():
         while True:
             try:
                 self.target = int(input("What is the dependent target? "))
-                break
+                if self.check_continuing_or_Categorical():
+                    break
             except Exception as e:
                 print(e)
     
     def check_continuing_or_Categorical(self):
-        a = DP.control_reg_or_cat(self.target, self.r_or_c, self.df)
-        print(a) # Fixa med true och false snyggare i return, sen skapa
-        # sen gör utfallen med print här i functionen
+        return_bool = DP.control_reg_or_cat(self.target, self.r_or_c, self.df)
+        try:
+            if return_bool == True:
+                if self.r_or_c == "r":
+                    print("It is a continuous value.")
+                    return True
+                elif self.r_or_c == "c":
+                    print("It is a categorical value.")
+                    return True
+            else:
+                print("Wrong target for this data type. Please try again.")
+        except Exception as e:
+            print(e)
+
+
             
 
     def run(self):
         self.get_r_or_c_input()
         self.read_in_csv()
         self.read_in_dependent_target()
-        self.check_continuing_or_Categorical()
+        print(self.csv_file.check_data_for_ml(3)) # !!!!!!!!!!!!!!!!
+
