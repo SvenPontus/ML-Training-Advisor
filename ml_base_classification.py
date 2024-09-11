@@ -18,6 +18,7 @@ class MLBaseClassification(ABC):
         self.best_model_params = None
         self.y_pred = None
         self.scaler = StandardScaler()
+        self.accuracy = None
 
     @abstractmethod
     def define_model(self):
@@ -53,10 +54,10 @@ class MLBaseClassification(ABC):
     def evaluate(self):
         """Evaluates the model using classification metrics."""
         from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-        accuracy = accuracy_score(self.y_test, self.y_pred)
+        self.accuracy = accuracy_score(self.y_test, self.y_pred)
         confusion = confusion_matrix(self.y_test, self.y_pred)
         report = classification_report(self.y_test, self.y_pred)
-        return f"Accuracy: {accuracy}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
+        return f"Accuracy: {self.accuracy}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
 
     def get_best_params(self):
         """Return the best hyperparameters after training."""

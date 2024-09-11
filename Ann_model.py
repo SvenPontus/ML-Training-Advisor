@@ -12,7 +12,7 @@ class MyAnnClass:
     """Artificial Neural Network (ANN) class with a unified interface for classification and regression."""
     
     def __init__(self, X, y, hidden_layer_sizes=(100,), activation='relu', loss='mse',
-                 optimizer='adam', batch_size=32, epochs=100, test_size=0.33, patience=10, verbose=1):
+                 optimizer='adam', batch_size=32, epochs=100, test_size=0.33, patience=10, verbose=0):
         """
         Initializes the MyAnnClass with given parameters for building an ANN.
         
@@ -55,6 +55,8 @@ class MyAnnClass:
         self.scaler = MinMaxScaler()
         self.model = None
         self.y_pred = None
+
+        self.r2_score = None
 
         # Scale the data
         self.X_train_scaled = self.scaler.fit_transform(self.X_train)
@@ -110,7 +112,7 @@ class MyAnnClass:
 
     def evaluate(self):
         """Evaluates the model and returns performance metrics."""
-        if not self.y_pred:
+        if self.y_pred is None or len(self.y_pred) == 0:
             self.predict()
 
         if 'crossentropy' in self.loss:
@@ -121,8 +123,8 @@ class MyAnnClass:
         else:
             from sklearn.metrics import mean_squared_error, r2_score
             mse = mean_squared_error(self.y_test, self.y_pred)
-            r2 = r2_score(self.y_test, self.y_pred)
-            return f"Mean Squared Error: {mse}\nR2 Score: {r2}"
+            self.r2_score = r2_score(self.y_test, self.y_pred)
+            return f"Mean Squared Error: {mse}\nR2 Score: {self.r2_score}"
 
     def get_best_params(self):
         """Not applicable for ANN, but provided for compatibility."""

@@ -19,6 +19,7 @@ class MLBaseRegression(ABC):
         self.best_model_params = None
         self.y_pred = None
         self.scaler = StandardScaler()
+        self.r2_score = None
 
     @abstractmethod
     def define_model(self):
@@ -57,9 +58,15 @@ class MLBaseRegression(ABC):
         mae = mean_absolute_error(self.y_test, self.y_pred)
         mse = mean_squared_error(self.y_test, self.y_pred)
         rmse = np.sqrt(mse)
-        r2 = r2_score(self.y_test, self.y_pred)
-        return f"MAE: {mae}, MSE: {mse}, RMSE: {rmse}, R2 Score: {r2}"
+        self.r2_score = r2_score(self.y_test, self.y_pred)
+        return f"MAE: {mae}, MSE: {mse}, RMSE: {rmse}, R2 Score: {self.r2_score}"
 
     def get_best_params(self):
         """Return the best hyperparameters after training."""
         return self.best_model_params
+
+    # Not tested, work?
+    def dump_model(self, filename):
+        """Save the trained model to a file."""
+        import joblib
+        joblib.dump(self.model, filename)
