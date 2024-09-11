@@ -27,6 +27,7 @@ class DataProcessing:
 
         raise ValueError(f"Unable to read file. Errors: {error_messages}")
 
+    # DONT NEED? 
     def basic_info(self):
         """Provides basic information about the dataframe."""
         if self.df is not None:

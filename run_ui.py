@@ -40,17 +40,17 @@ class RunUI():
 
     def read_in_dependent_target(self):
         """read in dependent target"""
-        print(f"{self.csv_file.basic_info()}\n")
+
         for nr, columns in enumerate(self.df.columns):
-              print(f"{nr} - {columns}")
+            print(f"{nr} - {columns}")
 
         while True:
             try:
                 self.target = int(input("What is the dependent target? "))
                 if self.check_continuing_or_Categorical():
                     break
-            except Exception as e:
-                print(e)
+            except ValueError:
+                print("Invalid input. Please enter a number.")  
     
     def check_continuing_or_Categorical(self):
         return_bool = DP.control_reg_or_cat(self.target, self.r_or_c, self.df)
@@ -73,8 +73,9 @@ class RunUI():
         if messege_or_ready == True:
             print("Data is ready for machine learning.")
         else:
-            print(f"Fix this->{self.csv_file.messages} \nand you need to run "
-                  f"the program again")
+            print(f"You need to fix this->{self.csv_file.messages} \n"
+                  f"and run the program again.")
+                 
 
             
     def run(self):
