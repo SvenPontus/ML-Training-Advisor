@@ -64,7 +64,7 @@ class MLBaseClassification(ABC):
         """Return the best hyperparameters after training."""
         return self.best_model_params
     
-    # not tried
+    
     def dump_model(self, filename):
         """Train the model on the entire dataset and save the trained model to a file."""
         import joblib
@@ -76,5 +76,5 @@ class MLBaseClassification(ABC):
         pipeline.fit(X_full, y_full)
         
         joblib.dump(pipeline, filename)
-        print(f"Model trained on full dataset and saved to {filename}")
+        
 

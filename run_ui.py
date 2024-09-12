@@ -18,7 +18,8 @@ class RunUI():
         self.csv_file = None # Object from DP
         self.df = None
         self.target = None
-        self.best_model = None
+        self.right_file_best_model = None
+        self.best_model_name = None
 
     def get_r_or_c_input(self):
         """get user r or c """  
@@ -98,22 +99,42 @@ class RunUI():
             r2_ENM, model_ENM, str_ENM = self.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
             r2_SVRM, model_SVRM, str_SVRM = self.auto_use_model(SVRM, X, y, "SVR Model")
             r2_ANN, model_ANN, str_ANN = self.auto_use_model(ANN, X, y, "Artificial Neural Network (ANN)")
-            best_model, best_r2 = self.calculate_best_r2_score(r2_LRM, r2_LM, r2_RM, r2_ENM, r2_SVRM, r2_ANN)
-            self.best_model = best_model
-            print(f"\nBest model is: {best_model} with the best R2 score: {best_r2}.")
+            best_model_name, best_r2 = self.calculate_best_r2_score(r2_LRM, r2_LM, r2_RM, r2_ENM, r2_SVRM, r2_ANN)
+            self.best_model_name = best_model_name
+            model_list = [
+                (str_LRM, model_LRM),
+                (str_LM, model_LM),
+                (str_RM, model_RM),
+                (str_ENM, model_ENM),
+                (str_SVRM, model_SVRM),
+                (str_ANN, model_ANN)
+            ]
+            
+            for model_str, model_instance in model_list:
+                if best_model_name in model_str:
+                    self.right_file_best_model = model_instance
+                    break
+            print(f"\nBest model is: {best_model_name} with the best R2 score: {best_r2}.")
 
         elif self.r_or_c == "c":
             X, y = self.csv_file.prepare_for_ml(self.target)
             accuracy_LoRM, model_LoRM, str_LoRM = self.auto_use_model(LoRM, X, y, "Logistic Regression Model")
             accuracy_KNNM, model_KNNM, str_KNNM = self.auto_use_model(KNNM, X, y, "K-Nearest Neighbors (KNN)")
             accuracy_SVCM, model_SVCM, str_SVCM = self.auto_use_model(SVCM, X, y, "Support Vector Classifier (SVC)")
-            #accuracy_ANN = self.auto_use_model(ANN(loss='categorical_crossentropy'), X, y) # The time is limited....
+            #accuracy_ANN = self.auto_use_model(ANN(loss='categorical_crossentropy'), X, y) # The time is limited....            
+            best_model_name, best_accuracy = self.calculate_best_accuracy_score(accuracy_LoRM, accuracy_KNNM, accuracy_SVCM) # accuracy_ANN
+            self.best_model = best_model_name
+            model_list = [
+                (str_LoRM, model_LoRM),
+                (str_KNNM, model_KNNM),
+                (str_SVCM, model_SVCM)
+            ]
 
-            # DET ÄR NR 2 här som är instansen av modellen: accuracy_LoRM, ->model_LoRM<- bara den som kan dumpas
-            
-            best_model, best_accuracy = self.calculate_best_accuracy_score(accuracy_LoRM, accuracy_KNNM, accuracy_SVCM) # accuracy_ANN
-            self.best_model = best_model
-            print(f"\nBest model is: {best_model} with the best accuracy score: {best_accuracy}.")
+            for model_str, model_instance in model_list:
+                if best_model_name in model_str:
+                    self.right_file_best_model = model_instance
+                    break
+            print(f"\nBest model is: {best_model_name} with the best accuracy score: {best_accuracy}.")
                
     def auto_use_model(self, model, X, y, model_name):
         model = model(X, y)
@@ -128,21 +149,21 @@ class RunUI():
     
     def calculate_best_r2_score(self, LRM, LM, RM, ENM, SVRM, ANN):
         models = {
-            'LRM': LRM,
-            'LM': LM,
-            'RM': RM,
-            'ENM': ENM,
-            'SVRM': SVRM,
-            'ANN': ANN
+            'Linear Regression Model': LRM,
+            'Lasso Regression Model': LM,
+            'Ridge Regression Model': RM,
+            'ElasticNet Regression Model': ENM,
+            'SVR Model': SVRM,
+            'Artificial Neural Network (ANN)': ANN
         }
         best_model = max(models, key=models.get)
         return best_model, models[best_model]
     
     def calculate_best_accuracy_score(self, LoRM, KNNM, SVCM): # ANN
         models = {
-            'LoRM': LoRM,
-            'KNNM': KNNM,
-            'SVCM': SVCM,
+            'Logistic Regression Model': LoRM,
+            'K-Nearest Neighbors (KNN)': KNNM,
+            'Support Vector Classifier (SVC)': SVCM,
             #'ANN': ANN
         }
         best_model = max(models, key=models.get)
@@ -150,13 +171,13 @@ class RunUI():
     
     def dump_best_model(self):
         while True:
-            user_input = input(f"\nDo you want to save the best model ({self.best_model})? (y/n): ")
+            user_input = input(f"\nDo you want to save the best model ({self.best_model_name})? (y/n): ")
             if user_input.lower() == 'y':
                 filename = input("Enter the filename to save the model: ") + ".h5"
                 
                 try:
-                    self.best_model.dump_model(filename)
-                    print(f"Model saved as {filename}.")
+                    self.right_file_best_model.dump_model(filename)
+                    print(f"Model trained on full dataset and saved to {filename}")
                     break 
                 except Exception as e:
                     print(f"Error saving model: {e}")
