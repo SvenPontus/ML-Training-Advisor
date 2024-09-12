@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, call
+from unittest.mock import patch
 
 from data_processing import DataProcessing as DP
 from run_ui import RunUI
