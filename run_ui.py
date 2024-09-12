@@ -169,8 +169,8 @@ class RunUI():
         model = model(X, y)
         model.train()
         model.predict()
-        evaluation = model.evaluate()
-        print(f"\nModel: {model_name}\n{evaluation}")
+        self.evaluation = model.evaluate() 
+        print(f"\nModel: {model_name}\n{self.evaluation}")
         if self.r_or_c == "r":
             return model.r2_score, model, model_name
         elif self.r_or_c == "c":

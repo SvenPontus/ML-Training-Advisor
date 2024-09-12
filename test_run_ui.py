@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, ANY
 
 from regressor_models import (LinearRegressionModel as LRM, 
                               LassoModel as LM, 
@@ -88,7 +88,7 @@ class TestRunUI(unittest.TestCase):
                     "\nPress enter or any key to continue.\n"
                     "And wait for results.")
                     self.assertTrue(result)
-
+    # If not ready for ML
     def test_invalid_check_if_ready_for_ml(self):
         self.run_ui.csv_file = DP("multi_c_test.csv")
         self.run_ui.r_or_c = "r"
@@ -118,14 +118,79 @@ class TestRunUI(unittest.TestCase):
 
 
 
+    # Test evaluate prints
+    def test_print_report_regressors(self):
+        """Test if the report is printed correctly"""
+        X, y = self.run_ui.csv_file.prepare_for_ml(3) 
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(LRM, X, y, "Linear Regression Model")
+            mock_print.assert_called_with(
+                "\nModel: Linear Regression Model"
+                "\nMAE: 1.237, MSE: 2.348, RMSE: 1.532, R2 Score: 0.923"
+            )
 
+    def test_print_report_lasso(self):
+        """Test if the Lasso regression report is printed correctly"""
+        X, y = self.run_ui.csv_file.prepare_for_ml(3)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(LM, X, y, "Lasso Regression Model")
+            mock_print.assert_called_with(
+                "\nModel: Lasso Regression Model"
+                "\nMAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
+            )
 
-                
+    def test_print_report_ridge(self):
+        """Test if the Ridge regression report is printed correctly"""
+        X, y = self.run_ui.csv_file.prepare_for_ml(3)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(RM, X, y, "Ridge Regression Model")
+            mock_print.assert_called_with(
+                "\nModel: Ridge Regression Model"
+                "\nMAE: 1.241, MSE: 2.373, RMSE: 1.541, R2 Score: 0.922"
+            )
+
+    def test_print_report_elastic_net(self):
+        """Test if the ElasticNet regression report is printed correctly"""
+        X, y = self.run_ui.csv_file.prepare_for_ml(3)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
+            mock_print.assert_called_with(
+                "\nModel: ElasticNet Regression Model"
+                "\nMAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
+            )
+
+    def test_print_report_svr(self):
+        """Test if the SVR regression report is printed correctly"""
+        X, y = self.run_ui.csv_file.prepare_for_ml(3)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(SVRM, X, y, "SVR Model")
+            mock_print.assert_called_with(
+                "\nModel: SVR Model"
+                "\nMAE: 0.526, MSE: 0.588, RMSE: 0.767, R2 Score: 0.981"
+            )
+
+"""
+    Problem
+    def test_print_report_ann(self):
+        #Test if the ANN report is printed correctly
+        X, y = self.run_ui.csv_file.prepare_for_ml(3)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(ANN, X, y, "Artificial Neural Network (ANN)")
+            
+            # Check if the correct model name was printed
+            mock_print.assert_any_call("\nModel: Artificial Neural Network (ANN)")
+            
+            # Check if the evaluation metrics were printed (separately)
+            mock_print.assert_any_call("\nMean Squared Error: " + ANY)
+            mock_print.assert_any_call("\nR2 Score: " + ANY)
+            mock_print.assert_any_call("\nMean Absolute Error: " + ANY)
+            mock_print.assert_any_call("\nRoot Mean Squared Error (RMSE): " + ANY)
+"""
                   
     
 
 
-    
+    # TEST BEST PARAM
 
                
                     

@@ -132,17 +132,26 @@ class MyAnnClass:
         if self.y_pred is None or len(self.y_pred) == 0:
             self.predict()
 
+        y_test_flat = self.y_test.ravel()
+        y_pred_flat = self.y_pred.ravel()
+
         if 'crossentropy' in self.loss:
-            accuracy = accuracy_score(self.y_test, self.y_pred)
-            confusion = confusion_matrix(self.y_test, self.y_pred)
-            report = classification_report(self.y_test, self.y_pred)
+            accuracy = accuracy_score(y_test_flat, y_pred_flat)
+            confusion = confusion_matrix(y_test_flat, y_pred_flat)
+            report = classification_report(y_test_flat, y_pred_flat)
             return f"Accuracy: {accuracy}\nConfusion Matrix:\n{confusion}\n"\
                 f"Classification Report:\n{report}"
         else:
             from sklearn.metrics import mean_squared_error, r2_score
-            mse = mean_squared_error(self.y_test, self.y_pred)
-            self.r2_score = r2_score(self.y_test, self.y_pred)
-            return f"Mean Squared Error: {mse}\nR2 Score: {self.r2_score}"
+            mse = mean_squared_error(y_test_flat, y_pred_flat)
+            mae = np.mean(np.abs(y_test_flat - y_pred_flat))
+            rmse = np.sqrt(mse)
+            self.r2_score = r2_score(y_test_flat, y_pred_flat)
+            return (f"Mean Squared Error: {mse:.3f}\n"
+                    f"R2 Score: {self.r2_score:.3f}\n"
+                    f"Mean Absolute Error: {mae:.3f}\n"
+                    f"Root Mean Squared Error (RMSE): {rmse:.3f}")
+
 
     def get_best_params(self):
         """Not applicable for ANN, but provided for compatibility."""
