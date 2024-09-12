@@ -6,6 +6,9 @@ from regressor_models import (LinearRegressionModel as LRM,
                               RidgeModel as RM,
                               ElasticNetModel as ENM,
                               SVRModel as SVRM)
+from classifier_models import (LogisticRegressionModel as LoRM,
+                               KNNModel as KNNM,
+                               SVCModel as SVCM)
 
 from ann_model import MyAnnClass as ANN
 
@@ -20,6 +23,7 @@ class TestRunUI(unittest.TestCase):
         self.run_ui.csv_file = DP("Adv.csv") 
         self.run_ui.r_or_c = "r"  # Simulate regressor mode
         self.run_ui.df = self.run_ui.csv_file.read_csv()
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(3) 
 
     def tearDown(self) -> None:
         # clean
@@ -118,59 +122,65 @@ class TestRunUI(unittest.TestCase):
 
 
 
-    # Test evaluate prints
+    # Test evaluate prints, and test best param print
     def test_print_report_regressors(self):
         """Test if the report is printed correctly"""
-        X, y = self.run_ui.csv_file.prepare_for_ml(3) 
         with patch("builtins.print") as mock_print:
-            self.run_ui.auto_use_model(LRM, X, y, "Linear Regression Model")
+            self.run_ui.auto_use_model(LRM, self.X, self.y, 
+                                       "Linear Regression Model")
             mock_print.assert_called_with(
-                "\nModel: Linear Regression Model"
-                "\nMAE: 1.237, MSE: 2.348, RMSE: 1.532, R2 Score: 0.923"
+                "\nModel: Linear Regression Model\n"
+                "The best paramgrid: {}\n"
+                "MAE: 1.237, MSE: 2.348, RMSE: 1.532, R2 Score: 0.923"
             )
 
     def test_print_report_lasso(self):
         """Test if the Lasso regression report is printed correctly"""
-        X, y = self.run_ui.csv_file.prepare_for_ml(3)
         with patch("builtins.print") as mock_print:
-            self.run_ui.auto_use_model(LM, X, y, "Lasso Regression Model")
+            self.run_ui.auto_use_model(LM, self.X, self.y, 
+                                       "Lasso Regression Model")
             mock_print.assert_called_with(
-                "\nModel: Lasso Regression Model"
-                "\nMAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
+                "\nModel: Lasso Regression Model\n"
+                "The best paramgrid: {'model__alpha': 0.1}\n"
+                "MAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
             )
 
     def test_print_report_ridge(self):
         """Test if the Ridge regression report is printed correctly"""
-        X, y = self.run_ui.csv_file.prepare_for_ml(3)
         with patch("builtins.print") as mock_print:
-            self.run_ui.auto_use_model(RM, X, y, "Ridge Regression Model")
+            self.run_ui.auto_use_model(RM, self.X, self.y, 
+                                       "Ridge Regression Model")
             mock_print.assert_called_with(
-                "\nModel: Ridge Regression Model"
-                "\nMAE: 1.241, MSE: 2.373, RMSE: 1.541, R2 Score: 0.922"
+                "\nModel: Ridge Regression Model\n"
+                "The best paramgrid: {'model__alpha': 1}\n"
+                "MAE: 1.241, MSE: 2.373, RMSE: 1.541, R2 Score: 0.922"
             )
 
     def test_print_report_elastic_net(self):
         """Test if the ElasticNet regression report is printed correctly"""
-        X, y = self.run_ui.csv_file.prepare_for_ml(3)
         with patch("builtins.print") as mock_print:
-            self.run_ui.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
+            self.run_ui.auto_use_model(ENM, self.X, self.y, 
+                                       "ElasticNet Regression Model")
             mock_print.assert_called_with(
-                "\nModel: ElasticNet Regression Model"
-                "\nMAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
+                "\nModel: ElasticNet Regression Model\n"
+                "The best paramgrid: {'model__alpha': 0.1, "
+                "'model__l1_ratio': 1, 'model__max_iter': 10000}\n"
+                "MAE: 1.256, MSE: 2.463, RMSE: 1.569, R2 Score: 0.919"
             )
 
     def test_print_report_svr(self):
         """Test if the SVR regression report is printed correctly"""
-        X, y = self.run_ui.csv_file.prepare_for_ml(3)
         with patch("builtins.print") as mock_print:
-            self.run_ui.auto_use_model(SVRM, X, y, "SVR Model")
+            self.run_ui.auto_use_model(SVRM, self.X, self.y, "SVR Model")
             mock_print.assert_called_with(
-                "\nModel: SVR Model"
-                "\nMAE: 0.526, MSE: 0.588, RMSE: 0.767, R2 Score: 0.981"
+                "\nModel: SVR Model\n"
+                "The best paramgrid: {'model__C': 10.0, 'model__degree': 1, "
+                "'model__gamma': 'scale', 'model__kernel': 'rbf'}\n"
+                "MAE: 0.526, MSE: 0.588, RMSE: 0.767, R2 Score: 0.981"
             )
 
-"""
-    Problem
+    """
+    Problem, different report
     def test_print_report_ann(self):
         #Test if the ANN report is printed correctly
         X, y = self.run_ui.csv_file.prepare_for_ml(3)
@@ -185,12 +195,87 @@ class TestRunUI(unittest.TestCase):
             mock_print.assert_any_call("\nR2 Score: " + ANY)
             mock_print.assert_any_call("\nMean Absolute Error: " + ANY)
             mock_print.assert_any_call("\nRoot Mean Squared Error (RMSE): " + ANY)
-"""
-                  
+    """
+    # Classifier
+    def test_print_report_LoRM(self):
+        """Test if the LoRM Classifier report is printed correctly"""
+        self.run_ui.csv_file = DP("multi_c_test.csv") 
+        self.run_ui.r_or_c = "c"  
+        self.run_ui.df = self.run_ui.csv_file.read_csv()
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(4)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(LoRM, self.X, self.y, "LoRM Model")
+            mock_print.assert_called_with(
+                "\nModel: LoRM Model\n"
+                "The best paramgrid: {'model__C': 10.0, 'model__solver':"
+                 " 'saga'}\nAccuracy: 0.98\nConfusion Matrix:\n"
+                 "[[15  0  0]\n [ 0 21  1]\n [ 0  0 13]]\n"
+                 "Classification Report:\n              "
+                 "precision    recall  f1-score   support\n\n"
+                 "      setosa       1.00      1.00      1.00        15\n"
+                 "  versicolor       1.00      0.95      0.98        22\n"
+                 "   virginica       0.93      1.00      0.96        13\n"
+                 "\n    accuracy                           0.98        50\n"
+                 "   macro avg       0.98      0.98      0.98        50\n"
+                 "weighted avg       0.98      0.98      0.98        50\n")
+            
+    def test_print_report_KNNM(self):
+        """Test if the KNNM Classifier report is printed correctly"""
+        self.run_ui.csv_file = DP("multi_c_test.csv") 
+        self.run_ui.r_or_c = "c"  
+        self.run_ui.df = self.run_ui.csv_file.read_csv()
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(4)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(KNNM, self.X, self.y, 
+                                       "K-Nearest Neighbors (KNN)")
+            mock_print.assert_called_with(
+                "\nModel: K-Nearest Neighbors (KNN)\nThe best paramgrid: "
+                "{'model__n_neighbors': 9}\nAccuracy: 1.0\n"
+                "Confusion Matrix:\n[[15  0  0]\n [ 0 22  0]\n"
+                " [ 0  0 13]]\nClassification Report:\n       "
+                "       precision    recall  f1-score   support\n\n"
+                "      setosa       1.00      1.00      1.00        15\n"
+                "  versicolor       1.00      1.00      1.00        22\n"
+                "   virginica       1.00      1.00      1.00        13\n"
+                "\n    accuracy                           1.00        50\n"
+                "   macro avg       1.00      1.00      1.00        50\n"
+                "weighted avg       1.00      1.00      1.00        50\n")
+            
     
+    def test_print_report_SVCM(self):
+        """Test if the Support Vector Classifier (SVC) 
+        report is printed correctly"""
+        self.run_ui.csv_file = DP("multi_c_test.csv") 
+        self.run_ui.r_or_c = "c"  
+        self.run_ui.df = self.run_ui.csv_file.read_csv()
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(4)
+        with patch("builtins.print") as mock_print:
+            self.run_ui.auto_use_model(SVCM, self.X, self.y, "Support Vector Classifier (SVC)")
+            mock_print.assert_called_with(
+                "\nModel: Support Vector Classifier (SVC)\n"
+                "The best paramgrid: {'model__C': 1.6681005372000588,"
+                " 'model__degree': 1, 'model__gamma': 'scale',"
+                " 'model__kernel': 'rbf'}\nAccuracy: 0.98\nConfusion"
+                " Matrix:\n[[15  0  0]\n [ 0 21  1]\n [ 0  0 13]]\n"
+                "Classification Report:\n              precision    "
+                "recall  f1-score   support\n\n      setosa       "
+                "1.00      1.00      1.00        15\n  versicolor    "
+                "   1.00      0.95      0.98        22\n   virginica "
+                "      0.93      1.00      0.96        13\n\n    accuracy"
+                "                           0.98        50\n   macro avg "
+                "      0.98      0.98      0.98        50\nweighted avg  "
+                "     0.98      0.98      0.98        50\n")
+            
+    # Dump model
+            
+
+        
 
 
-    # TEST BEST PARAM
+
+        
+
+    
 
                
                     

@@ -62,7 +62,8 @@ class MLBaseClassification(ABC):
         self.accuracy = accuracy_score(self.y_test, self.y_pred)
         confusion = confusion_matrix(self.y_test, self.y_pred)
         report = classification_report(self.y_test, self.y_pred)
-        return f"Accuracy: {self.accuracy.round(3)}\nConfusion Matrix:\n"\
+        return f"The best paramgrid: {self.best_model_params}\n"\
+            f"Accuracy: {self.accuracy.round(3)}\nConfusion Matrix:\n"\
             f"{confusion}\nClassification Report:\n{report}"
 
     def get_best_params(self):

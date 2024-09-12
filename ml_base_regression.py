@@ -63,7 +63,8 @@ class MLBaseRegression(ABC):
         mse = mean_squared_error(self.y_test, self.y_pred)
         rmse = np.sqrt(mse)
         self.r2_score = r2_score(self.y_test, self.y_pred).round(3)
-        return f"MAE: {mae.round(3)}, MSE: {mse.round(3)}, "\
+        return f"The best paramgrid: {self.best_model_params}\n"\
+                f"MAE: {mae.round(3)}, MSE: {mse.round(3)}, "\
                 f"RMSE: {rmse.round(3)}, R2 Score: {self.r2_score}"
 
     def get_best_params(self):
