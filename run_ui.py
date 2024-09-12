@@ -45,8 +45,9 @@ class RunUI():
                 self.csv_file = DP(Vald.control_csv(csv_name))
                 self.df = self.csv_file.read_csv()
                 break
-            except Exception as e:
+            except ValueError as e:
                 print(e)
+
 
     def read_in_dependent_target(self):
         """read in dependent target"""
@@ -93,21 +94,21 @@ class RunUI():
     def start_ml(self):
         if self.r_or_c == "r":            
             X, y = self.csv_file.prepare_for_ml(self.target)
-            r2_LRM, model_LRM, str_LRM = self.auto_use_model(LRM, X, y, "Linear Regression Model")
-            r2_LM, model_LM, str_LM = self.auto_use_model(LM, X, y, "Lasso Regression Model")
-            r2_RM, model_RM, str_RM = self.auto_use_model(RM, X, y, "Ridge Regression Model")
-            r2_ENM, model_ENM, str_ENM = self.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
-            r2_SVRM, model_SVRM, str_SVRM = self.auto_use_model(SVRM, X, y, "SVR Model")
-            r2_ANN, model_ANN, str_ANN = self.auto_use_model(ANN, X, y, "Artificial Neural Network (ANN)")
+            r2_LRM, self.model_LRM, str_LRM = self.auto_use_model(LRM, X, y, "Linear Regression Model")
+            r2_LM, self.model_LM, str_LM = self.auto_use_model(LM, X, y, "Lasso Regression Model")
+            r2_RM, self.model_RM, str_RM = self.auto_use_model(RM, X, y, "Ridge Regression Model")
+            r2_ENM, self.model_ENM, str_ENM = self.auto_use_model(ENM, X, y, "ElasticNet Regression Model")
+            r2_SVRM, self.model_SVRM, str_SVRM = self.auto_use_model(SVRM, X, y, "SVR Model")
+            r2_ANN, self.model_ANN, str_ANN = self.auto_use_model(ANN, X, y, "Artificial Neural Network (ANN)")
             best_model_name, best_r2 = self.calculate_best_r2_score(r2_LRM, r2_LM, r2_RM, r2_ENM, r2_SVRM, r2_ANN)
             self.best_model_name = best_model_name
             model_list = [
-                (str_LRM, model_LRM),
-                (str_LM, model_LM),
-                (str_RM, model_RM),
-                (str_ENM, model_ENM),
-                (str_SVRM, model_SVRM),
-                (str_ANN, model_ANN)
+                (str_LRM, self.model_LRM),
+                (str_LM, self.model_LM),
+                (str_RM, self.model_RM),
+                (str_ENM, self.model_ENM),
+                (str_SVRM, self.model_SVRM),
+                (str_ANN, self.model_ANN)
             ]
             
             for model_str, model_instance in model_list:
