@@ -1,19 +1,25 @@
-import pandas as pd
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
-from sklearn.utils.multiclass import type_of_target # GOOD, Maybe fix the problem with the type_of_target
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+# GOOD, Maybe fix the problem with the type_of_target
+#from sklearn.utils.multiclass import type_of_target 
+from sklearn.metrics import (accuracy_score, 
+                             confusion_matrix, 
+                             classification_report)
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
 
 class MyAnnClass:
-    """Artificial Neural Network (ANN) class with a unified interface for classification and regression."""
+    """Artificial Neural Network (ANN) class with a 
+    unified interface for classification and regression."""
     
-    def __init__(self, X, y, hidden_layer_sizes=(100,), activation='relu', loss='mse',
-                 optimizer='adam', batch_size=32, epochs=100, test_size=0.33, patience=10, verbose=0):
+    def __init__(self, X, y, hidden_layer_sizes=(100,), 
+                 activation='relu', loss='mse',
+                 optimizer='adam', batch_size=32, 
+                 epochs=100, test_size=0.33, 
+                 patience=10, verbose=0):
         """
         Initializes the MyAnnClass with given parameters for building an ANN.
         
@@ -28,7 +34,8 @@ class MyAnnClass:
         activation : str
             Activation function for the hidden layers. Default is 'relu'.
         loss : str
-            Loss function. 'mse' for regression, 'binary_crossentropy' or 'categorical_crossentropy' for classification.
+            Loss function. 'mse' for regression, 'binary_crossentropy' or 
+            'categorical_crossentropy' for classification.
         optimizer : str
             Optimizer used to minimize the loss. Default is 'adam'.
         batch_size : int
@@ -43,7 +50,8 @@ class MyAnnClass:
             Verbosity mode (0, 1, or 2).
         """
         
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42)
         self.hidden_layer_sizes = hidden_layer_sizes
         self.activation = activation
         self.loss = loss
@@ -77,26 +85,34 @@ class MyAnnClass:
             elif units < 0:
                 model.add(Dropout(abs(units)))
             else:
-                raise ValueError("hidden_layer_sizes must be a tuple of positive integers or floats.")
+                raise ValueError("hidden_layer_sizes must be a tuple of"
+                                 " positive integers or floats.")
 
         # Output layer
         if self.loss == 'binary_crossentropy':
             model.add(Dense(1, activation='sigmoid'))  # Binary classification
         elif self.loss == 'categorical_crossentropy':
-            model.add(Dense(self.y_train.shape[1], activation='softmax'))  # Multi-class classification
+            # Multi-class classification
+            model.add(Dense(self.y_train.shape[1], activation='softmax'))  
         else:
             model.add(Dense(1))  # Regression (default linear activation)
 
-        model.compile(optimizer=self.optimizer, loss=self.loss, metrics=['accuracy'] if 'crossentropy' in self.loss else ['mse'])
+        model.compile(optimizer=self.optimizer, 
+                      loss=self.loss, 
+                      metrics=['accuracy'] if 'crossentropy' in 
+                      self.loss else ['mse'])
         return model
 
     def train(self):
         """Trains the ANN model."""
-        early_stop = EarlyStopping(monitor='val_loss', patience=self.patience, verbose=self.verbose)
+        early_stop = EarlyStopping(monitor='val_loss', 
+                                   patience=self.patience, verbose=self.verbose)
 
         self.model = self.define_model()
-        self.model.fit(self.X_train_scaled, self.y_train, validation_data=(self.X_test_scaled, self.y_test),
-                       epochs=self.epochs, batch_size=self.batch_size, verbose=self.verbose, callbacks=[early_stop])
+        self.model.fit(self.X_train_scaled, self.y_train, 
+                       validation_data=(self.X_test_scaled, self.y_test),
+                       epochs=self.epochs, batch_size=self.batch_size, 
+                       verbose=self.verbose, callbacks=[early_stop])
 
     def predict(self):
         """Makes predictions on the test set."""
@@ -120,7 +136,8 @@ class MyAnnClass:
             accuracy = accuracy_score(self.y_test, self.y_pred)
             confusion = confusion_matrix(self.y_test, self.y_pred)
             report = classification_report(self.y_test, self.y_pred)
-            return f"Accuracy: {accuracy}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
+            return f"Accuracy: {accuracy}\nConfusion Matrix:\n{confusion}\n"\
+                f"Classification Report:\n{report}"
         else:
             from sklearn.metrics import mean_squared_error, r2_score
             mse = mean_squared_error(self.y_test, self.y_pred)

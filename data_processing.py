@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 
 class DataProcessing:
-    """Class for handling CSV data and preparing it for machine learning models."""
+    """Class for handling CSV data and preparing 
+    it for machine learning models."""
     
     def __init__(self, filepath=None):
         self.df = None
@@ -18,12 +19,14 @@ class DataProcessing:
         for encoding in encodings:
             for delimiter in delimiters:
                 try:
-                    self.df = pd.read_csv(self.filepath, encoding=encoding, delimiter=delimiter)
+                    self.df = pd.read_csv(
+                        self.filepath, encoding=encoding, delimiter=delimiter)
                     if not isinstance(self.df, pd.DataFrame) or self.df.empty:
                         raise ValueError("Invalid or empty DataFrame")
                     return self.df
                 except Exception as e:
-                    error_messages.append(f"Failed with encoding {encoding} and delimiter '{delimiter}': {e}")
+                    error_messages.append(f"Failed with encoding {encoding} "\
+                                          f"and delimiter '{delimiter}': {e}")
 
         raise ValueError(f"Unable to read file. Errors: {error_messages}")
 
@@ -31,30 +34,36 @@ class DataProcessing:
     def basic_info(self):
         """Provides basic information about the dataframe."""
         if self.df is not None:
-            non_numeric_columns = [col for col in self.df.columns if not pd.api.types.is_numeric_dtype(self.df[col])]
+            non_numeric_columns = [col for col in 
+                                   self.df.columns if not 
+                                   pd.api.types.is_numeric_dtype(self.df[col])]
             return {
                 "Rows": len(self.df),
                 "Columns": len(self.df.columns),
                 "Memory (KB)": (self.df.memory_usage().sum() / 1024).round(1),
-                "Non-Numeric Columns": non_numeric_columns if non_numeric_columns else "None"
+                "Non-Numeric Columns": 
+                non_numeric_columns if non_numeric_columns else "None"
             }
         else:
             raise ValueError("DataFrame not initialized")
 
     def prepare_for_ml(self, target_column_index):
-        """Prepares data by splitting into X (features) and y (target), processes non-numeric columns."""
+        """Prepares data by splitting into X (features) 
+        and y (target), processes non-numeric columns."""
         if self.df is not None:
             y = self.df.iloc[:, target_column_index]
             X = self.df.drop(self.df.columns[target_column_index], axis=1)
             
             # Handle categorical columns (non-numeric)... get dummies auto?...Wrong way...
-            non_numeric_columns = [col for col in X.columns if not pd.api.types.is_numeric_dtype(X[col])]
+            non_numeric_columns = [col for col in X.columns if 
+                                   not pd.api.types.is_numeric_dtype(X[col])]
             for col in non_numeric_columns:
                 unique_values = X[col].nunique()
                 if unique_values == 2:
-                    X = pd.get_dummies(X, columns=[col], drop_first=True)  # Binary dummies for two unique values
+                    X = pd.get_dummies(X, columns=[col], drop_first=True) 
                 else:
-                    raise ValueError(f"Column {col} has more than 2 unique values and needs encoding.")
+                    raise ValueError(f"Column {col} has more than 2 "
+                                     "unique values and needs encoding.")
             
             return X, y
         else:
@@ -71,13 +80,16 @@ class DataProcessing:
                 self.messages.append(f"Columns with NaN values: {nan_columns}")
 
             # Check non-numeric columns
-            non_numeric_columns = [col for col in X.columns if not pd.api.types.is_numeric_dtype(X[col])]
+            non_numeric_columns = [col for col in X.columns if 
+                                   not pd.api.types.is_numeric_dtype(X[col])]
             for col in non_numeric_columns:
                 unique_values = X[col].nunique()
                 if unique_values > 2:
-                    self.messages.append(f"Column {col} has {unique_values} unique values, which may need encoding.")
+                    self.messages.append(f"Column {col} has {unique_values} "
+                                         "unique values, which may need encoding.")
                 elif unique_values == 2:
-                    self.messages.append(f"Column {col} is binary and can be converted to dummy variables.")
+                    self.messages.append(f"Column {col} is binary and can be "
+                                         "converted to dummy variables.")
 
             return self.messages if self.messages else True
         else:
@@ -108,5 +120,6 @@ class DataProcessing:
     def split_data(self, X, y, test_size=0.33, random_state=101):
         """Splits data into training and testing sets."""
         from sklearn.model_selection import train_test_split
-        return train_test_split(X, y, test_size=test_size, random_state=random_state)
+        return train_test_split(X, y, test_size=test_size, 
+                                random_state=random_state)
 

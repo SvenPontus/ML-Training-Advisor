@@ -23,12 +23,14 @@ class MLBaseClassification(ABC):
 
     @abstractmethod
     def define_model(self):
-        """Define the ML model and any hyperparameters. Must be implemented in subclasses."""
+        """Define the ML model and any hyperparameters. 
+            Must be implemented in subclasses."""
         pass
 
     def train(self):
         """Train the model using the best hyperparameters."""
-        pipeline = Pipeline([('scaler', self.scaler), ('model', self.define_model())])
+        pipeline = Pipeline([('scaler', self.scaler), 
+                             ('model', self.define_model())])
         param_grid = self.get_param_grid()
         grid_search = self.grid_search_pipeline(pipeline, param_grid)
         grid_search.fit(self.X_train, self.y_train)
@@ -54,11 +56,14 @@ class MLBaseClassification(ABC):
     
     def evaluate(self):
         """Evaluates the model using classification metrics."""
-        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+        from sklearn.metrics import (accuracy_score, 
+                                     confusion_matrix, 
+                                     classification_report)
         self.accuracy = accuracy_score(self.y_test, self.y_pred)
         confusion = confusion_matrix(self.y_test, self.y_pred)
         report = classification_report(self.y_test, self.y_pred)
-        return f"Accuracy: {self.accuracy.round(3)}\nConfusion Matrix:\n{confusion}\nClassification Report:\n{report}"
+        return f"Accuracy: {self.accuracy.round(3)}\nConfusion Matrix:\n"\
+            f"{confusion}\nClassification Report:\n{report}"
 
     def get_best_params(self):
         """Return the best hyperparameters after training."""
@@ -66,13 +71,15 @@ class MLBaseClassification(ABC):
     
     
     def dump_model(self, filename):
-        """Train the model on the entire dataset and save the trained model to a file."""
+        """Train the model on the entire dataset 
+        and save the trained model to a file."""
         import joblib
 
         X_full = np.vstack((self.X_train, self.X_test))
         y_full = np.hstack((self.y_train, self.y_test))
         
-        pipeline = Pipeline([('scaler', self.scaler), ('model', self.define_model())])
+        pipeline = Pipeline([('scaler', self.scaler), 
+                             ('model', self.define_model())])
         pipeline.fit(X_full, y_full)
         
         joblib.dump(pipeline, filename)

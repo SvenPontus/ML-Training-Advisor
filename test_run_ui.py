@@ -16,7 +16,7 @@ class TestRunUI(unittest.TestCase):
 
     def setUp(self):
         self.run_ui = RunUI()
-        # Maybe will see....
+        # setup for the test
         self.run_ui.csv_file = DP("Adv.csv") 
         self.run_ui.r_or_c = "r"  # Simulate regressor mode
         self.run_ui.df = self.run_ui.csv_file.read_csv()
@@ -35,12 +35,15 @@ class TestRunUI(unittest.TestCase):
         with patch("builtins.input", side_effect=["x","c"]):
             with patch("builtins.print") as mock_print:
                 self.run_ui.get_r_or_c_input()
-                mock_print.assert_called_with("Invalid input. Only (r) or (c) Please try again.")
+                mock_print.assert_called_with(
+                    "Invalid input. Only (r) or (c) Please try again.")
 
     # 2
     def test_read_in_csv(self):
         with patch("builtins.input", return_value="Adv.csv"):
-            with patch("data_processing.DataProcessing.read_csv") as mock_read_csv:
+            with patch(
+                "data_processing.DataProcessing.read_csv"
+                ) as mock_read_csv:
                 self.run_ui.read_in_csv()
                 mock_read_csv.assert_called_once()
     
@@ -66,18 +69,22 @@ class TestRunUI(unittest.TestCase):
         with patch("builtins.input", side_effect=["x", "1"]):  
             with patch("builtins.print") as mock_print:
                 self.run_ui.read_in_dependent_target()
-                mock_print.assert_any_call("Invalid input. Please enter a number.")
+                mock_print.assert_any_call(
+                    "Invalid input. Please enter a number.")
                 
 
     # 4
     def test_check_if_ready_for_ml(self):
         self.run_ui.df = self.run_ui.csv_file.read_csv()
         self.run_ui.target = 3
-        with patch("data_processing.DataProcessing.check_data_for_ml", return_value=True):
+        with patch(
+            "data_processing.DataProcessing.check_data_for_ml", 
+            return_value=True):
             with patch("builtins.print") as mock_print:
                 with patch("builtins.input", return_value=""):  
                     result = self.run_ui.check_if_ready_for_ml()
-                    mock_print.assert_called_with("Data is ready for machine learning.\n"
+                    mock_print.assert_called_with(
+                        "Data is ready for machine learning.\n"
                     "\nPress enter or any key to continue.\n"
                     "And wait for results.")
                     self.assertTrue(result)
@@ -87,11 +94,13 @@ class TestRunUI(unittest.TestCase):
         self.run_ui.r_or_c = "r"
         self.run_ui.df = self.run_ui.csv_file.read_csv()
         self.run_ui.target = 1
-        with patch("data_processing.DataProcessing.check_data_for_ml", return_value=False):
+        with patch("data_processing.DataProcessing.check_data_for_ml", 
+                   return_value=False):
             with patch("builtins.print") as mock_print:
                 with patch("builtins.input", return_value=""):
                     self.run_ui.check_if_ready_for_ml()
-                    mock_print.assert_called_with(f"You need to fix this->{self.run_ui.csv_file.messages} \n"
+                    mock_print.assert_called_with(
+                        f"You need to fix this->{self.run_ui.csv_file.messages} \n"
                                                 f"and run the program again.")
                                     
     # 4c
@@ -100,12 +109,12 @@ class TestRunUI(unittest.TestCase):
         self.run_ui.target = 3 
         self.run_ui.start_ml()
         # Check if the selected model is an instance of the correct class
-        self.assertIsInstance(self.run_ui.model_LRM, LRM)  # instance of LinearRegressionModel
-        self.assertIsInstance(self.run_ui.model_LM, LM)    # instance of LassoModel
-        self.assertIsInstance(self.run_ui.model_RM, RM)    # instance of RidgeModel
-        self.assertIsInstance(self.run_ui.model_ENM, ENM)  # instance of ElasticNetModel
-        self.assertIsInstance(self.run_ui.model_SVRM, SVRM)  # instance of SVRModel
-        self.assertIsInstance(self.run_ui.model_ANN, ANN)  # instance of MyAnnClass
+        self.assertIsInstance(self.run_ui.model_LRM, LRM)  
+        self.assertIsInstance(self.run_ui.model_LM, LM)    
+        self.assertIsInstance(self.run_ui.model_RM, RM)    
+        self.assertIsInstance(self.run_ui.model_ENM, ENM) 
+        self.assertIsInstance(self.run_ui.model_SVRM, SVRM)  
+        self.assertIsInstance(self.run_ui.model_ANN, ANN)  
 
 
 
