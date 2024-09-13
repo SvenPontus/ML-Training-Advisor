@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch, ANY
+import os
 
 from regressor_models import (LinearRegressionModel as LRM, 
                               LassoModel as LM, 
@@ -25,8 +26,10 @@ class TestRunUI(unittest.TestCase):
         self.run_ui.df = self.run_ui.csv_file.read_csv()
         self.X, self.y = self.run_ui.csv_file.prepare_for_ml(3) 
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         # clean
+        if os.path.exists("random_test_model.h5"):
+                os.remove("random_test_model.h5")
         self.run_ui = None
 
     # 1
@@ -92,6 +95,7 @@ class TestRunUI(unittest.TestCase):
                     "\nPress enter or any key to continue.\n"
                     "And wait for results.")
                     self.assertTrue(result)
+    
     # If not ready for ML
     def test_invalid_check_if_ready_for_ml(self):
         self.run_ui.csv_file = DP("multi_c_test.csv")
@@ -265,6 +269,29 @@ class TestRunUI(unittest.TestCase):
                 "                           0.98        50\n   macro avg "
                 "      0.98      0.98      0.98        50\nweighted avg  "
                 "     0.98      0.98      0.98        50\n")
+            
+    # Test dump model
+    def test_yes_dump_model(self):
+        self.run_ui.target = 3
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(self.run_ui.target)
+        self.run_ui.start_ml()
+        with patch("builtins.input", side_effect=["y", "random_test_model"]):
+            self.run_ui.dump_best_model()
+            self.assertTrue(self.run_ui.dump_best_model)
+            self.assertTrue("random_test_model.h5" in os.listdir())
+
+    
+    def test_no_dump_model(self):
+        self.run_ui.target = 3
+        self.X, self.y = self.run_ui.csv_file.prepare_for_ml(self.run_ui.target)
+        self.run_ui.start_ml()
+        with patch("builtins.input", side_effect=["n"]):
+            self.run_ui.dump_best_model()
+            self.assertFalse("random_test_model.h5" in os.listdir())
+
+
+
+
             
 
 

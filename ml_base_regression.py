@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+from sklearn.utils.validation import check_X_y
 import numpy as np
 
 
@@ -11,6 +12,11 @@ class MLBaseRegression(ABC):
     
     def __init__(self, X, y, test_size=0.33, random_state=101):
         """Initialize the MLBase with training and test data."""
+        try:
+            X, y = check_X_y(X, y)
+        except ValueError as e:
+            raise ValueError("Invalid input: X and y must be array-like "
+                             "and of compatible shapes.") from e
         (self.X_train, self.X_test, 
          self.y_train, self.y_test) = train_test_split(
             X, y, test_size=test_size, random_state=random_state

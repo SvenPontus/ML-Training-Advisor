@@ -53,3 +53,8 @@ class TestMlRegressor(unittest.TestCase):
         self.assertEqual(param_grid['model__gamma'], ['scale', 'auto'])
         self.assertTrue(np.array_equal(param_grid['model__C'], np.logspace(0, 1, 10)))
         self.assertTrue(np.array_equal(param_grid['model__degree'], np.arange(1, 9)))
+
+    def test_invalid_model(self):
+        """Test invalid model definition."""
+        with self.assertRaises(ValueError):
+            model = LRM("Wrong", "wrong")
