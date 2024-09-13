@@ -71,7 +71,6 @@ class MLBaseRegression(ABC):
         """Return the best hyperparameters after training."""
         return self.best_model_params
 
-    # Not tested, work?
     def dump_model(self, filename):
         """Train the model on the entire dataset 
         and save the trained model to a file."""
