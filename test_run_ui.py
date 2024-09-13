@@ -10,7 +10,6 @@ from regressor_models import (LinearRegressionModel as LRM,
 from classifier_models import (LogisticRegressionModel as LoRM,
                                KNNModel as KNNM,
                                SVCModel as SVCM)
-
 from ann_model import MyAnnClass as ANN
 
 from data_processing import DataProcessing as DP
@@ -79,7 +78,6 @@ class TestRunUI(unittest.TestCase):
                 mock_print.assert_any_call(
                     "Invalid input. Please enter a number.")
                 
-
     # 4
     def test_check_if_ready_for_ml(self):
         self.run_ui.df = self.run_ui.csv_file.read_csv()
@@ -123,8 +121,6 @@ class TestRunUI(unittest.TestCase):
         self.assertIsInstance(self.run_ui.model_ENM, ENM) 
         self.assertIsInstance(self.run_ui.model_SVRM, SVRM)  
         self.assertIsInstance(self.run_ui.model_ANN, ANN)  
-
-
 
     # Test evaluate prints, and test best param print
     def test_print_report_regressors(self):
@@ -245,7 +241,6 @@ class TestRunUI(unittest.TestCase):
                 "   macro avg       1.00      1.00      1.00        50\n"
                 "weighted avg       1.00      1.00      1.00        50\n")
             
-    
     def test_print_report_SVCM(self):
         """Test if the Support Vector Classifier (SVC) 
         report is printed correctly"""
@@ -280,7 +275,6 @@ class TestRunUI(unittest.TestCase):
             self.assertTrue(self.run_ui.dump_best_model)
             self.assertTrue("random_test_model.h5" in os.listdir())
 
-    
     def test_no_dump_model(self):
         self.run_ui.target = 3
         self.X, self.y = self.run_ui.csv_file.prepare_for_ml(self.run_ui.target)
