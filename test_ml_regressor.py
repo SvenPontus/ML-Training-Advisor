@@ -21,22 +21,22 @@ class TestMlRegressor(unittest.TestCase):
 
     def test_linear_regression(self):
         model = LRM(self.X, self.y)
-        self.assertIsInstance(model.define_model(), LinearRegression().__class__)  # Kontrollera rätt modell
-        self.assertEqual(model.get_param_grid(), {})  # Kontrollera att param_grid är tomt
+        self.assertIsInstance(model.define_model(), LinearRegression().__class__)  
+        self.assertEqual(model.get_param_grid(), {})  
 
     def test_lasso_model(self):
         model = LM(self.X, self.y)
-        self.assertIsInstance(model.define_model(), Lasso().__class__)  # Kontrollera rätt modell
+        self.assertIsInstance(model.define_model(), Lasso().__class__) 
         self.assertEqual(model.get_param_grid(), {'model__alpha': [0.001, 0.01, 0.1, 1, 10]})
 
     def test_ridge_model(self):
         model = RM(self.X, self.y)
-        self.assertIsInstance(model.define_model(), Ridge().__class__)  # Kontrollera rätt modell
+        self.assertIsInstance(model.define_model(), Ridge().__class__)
         self.assertEqual(model.get_param_grid(), {'model__alpha': [0.001, 0.01, 0.1, 1, 10, 100, 1000]})
 
     def test_elastic_net_model(self):
         model = ENM(self.X, self.y)
-        self.assertIsInstance(model.define_model(), ElasticNet().__class__)  # Kontrollera rätt modell
+        self.assertIsInstance(model.define_model(), ElasticNet().__class__) 
         self.assertEqual(model.get_param_grid(), {
             'model__l1_ratio': [.1, .5, .7, .9, .95, .99, 1],
             'model__alpha': [0.01, 0.1, 1, 10, 100],
@@ -45,7 +45,7 @@ class TestMlRegressor(unittest.TestCase):
 
     def test_svr_model(self):
         model = SVRM(self.X, self.y)
-        self.assertIsInstance(model.define_model(), SVR().__class__)  # Kontrollera rätt modell
+        self.assertIsInstance(model.define_model(), SVR().__class__) 
 
         param_grid = model.get_param_grid()
         
