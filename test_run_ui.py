@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, ANY
+from unittest.mock import patch
 import os
 
 from regressor_models import (LinearRegressionModel as LRM, 
@@ -31,7 +31,7 @@ class TestRunUI(unittest.TestCase):
                 os.remove("random_test_model.h5")
         self.run_ui = None
 
-    # 1
+
     def test_get_r_or_c_input(self):
         with patch("builtins.input", side_effect=["r"]):
             self.run_ui.get_r_or_c_input()
@@ -44,7 +44,7 @@ class TestRunUI(unittest.TestCase):
                 mock_print.assert_called_with(
                     "Invalid input. Only (r) or (c) Please try again.")
 
-    # 2
+
     def test_read_in_csv(self):
         with patch("builtins.input", return_value="Adv.csv"):
             with patch(
@@ -61,7 +61,7 @@ class TestRunUI(unittest.TestCase):
                 self.run_ui.read_in_csv()
                 mock_print.assert_called_with("You must choose an existing CSV file")
     """
-    # 3
+
     def test_read_in_dependent_target(self):
         self.run_ui.df = self.run_ui.csv_file.read_csv()
         with patch("builtins.input", side_effect=["3"]):
@@ -78,7 +78,7 @@ class TestRunUI(unittest.TestCase):
                 mock_print.assert_any_call(
                     "Invalid input. Please enter a number.")
                 
-    # 4
+
     def test_check_if_ready_for_ml(self):
         self.run_ui.df = self.run_ui.csv_file.read_csv()
         self.run_ui.target = 3
@@ -109,7 +109,6 @@ class TestRunUI(unittest.TestCase):
                         f"You need to fix this->{self.run_ui.csv_file.messages} \n"
                                                 f"and run the program again.")
                                     
-    # 4c
     # If model instance is correct
     def test_model_regressors(self):
         self.run_ui.target = 3 
@@ -282,24 +281,4 @@ class TestRunUI(unittest.TestCase):
         with patch("builtins.input", side_effect=["n"]):
             self.run_ui.dump_best_model()
             self.assertFalse("random_test_model.h5" in os.listdir())
-
-
-
-
-            
-
-
-  
-
-
         
-
-
-
-        
-
-    
-
-               
-                    
-            

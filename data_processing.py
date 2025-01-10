@@ -4,7 +4,7 @@ import numpy as np
 class DataProcessing:
     """Class for handling CSV data and preparing 
     it for machine learning models."""
-    
+
     def __init__(self, filepath=None):
         self.df = None
         self.filepath = filepath
@@ -30,7 +30,6 @@ class DataProcessing:
 
         raise ValueError(f"Unable to read file. Errors: {error_messages}")
 
-    # DONT NEED? 
     def basic_info(self):
         """Provides basic information about the dataframe."""
         if self.df is not None:
@@ -64,7 +63,7 @@ class DataProcessing:
                 else:
                     raise ValueError(f"Column {col} has more than 2 "
                                      "unique values and needs encoding.")
-            
+
             return X, y
         else:
             raise ValueError("DataFrame not initialized")
@@ -111,15 +110,13 @@ class DataProcessing:
             if not np.issubdtype(column_dtype, np.number):
                 return True
             else:
-                return False  
+                return False
 
         else:
             raise ValueError(f"Error in control_reg_or_cat.")
 
-    # DONT NEED? 
     def split_data(self, X, y, test_size=0.33, random_state=101):
         """Splits data into training and testing sets."""
         from sklearn.model_selection import train_test_split
         return train_test_split(X, y, test_size=test_size, 
                                 random_state=random_state)
-

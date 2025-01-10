@@ -57,3 +57,4 @@ class TestMlRegressor(unittest.TestCase):
         """Test invalid model definition."""
         with self.assertRaises(ValueError):
             model = LRM("Wrong", "wrong")
+            

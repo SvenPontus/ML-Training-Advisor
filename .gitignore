@@ -166,4 +166,4 @@ cython_debug/
 *.pdf
 info.txt
 Old_program/
-
+.vscode/

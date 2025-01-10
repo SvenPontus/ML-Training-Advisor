@@ -3,9 +3,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 # GOOD, Maybe fix the problem with the type_of_target
-#from sklearn.utils.multiclass import type_of_target 
-from sklearn.metrics import (accuracy_score, 
-                             confusion_matrix, 
+#from sklearn.utils.multiclass import type_of_target
+from sklearn.metrics import (accuracy_score,
+                             confusion_matrix,
                              classification_report)
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
@@ -18,7 +18,7 @@ class MyAnnClass:
     def __init__(self, X, y, hidden_layer_sizes=(100,), 
                  activation='relu', loss='mse',
                  optimizer='adam', batch_size=32, 
-                 epochs=100, test_size=0.33, 
+                 epochs=100, test_size=0.33,
                  patience=10, verbose=0):
         """
         Initializes the MyAnnClass with given parameters for building an ANN.
@@ -60,7 +60,7 @@ class MyAnnClass:
         self.epochs = epochs
         self.patience = patience
         self.verbose = verbose
-        
+
         self.scaler = MinMaxScaler()
         self.model = None
         self.y_pred = None
@@ -152,8 +152,6 @@ class MyAnnClass:
                     f"Mean Absolute Error: {mae:.3f}\n"
                     f"Root Mean Squared Error (RMSE): {rmse:.3f}")
 
-
     def get_best_params(self):
         """Not applicable for ANN, but provided for compatibility."""
         return "No hyperparameter tuning used for ANN."
-

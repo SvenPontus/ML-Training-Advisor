@@ -53,6 +53,3 @@ class TestMlClassifier(unittest.TestCase):
         """Test invalid model definition."""
         with self.assertRaises(ValueError):
             model = LoRM("Wrong", "wrong")
-            
-
-

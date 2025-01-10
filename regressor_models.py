@@ -1,8 +1,8 @@
 import numpy as np
 
 from sklearn.svm import SVR
-from sklearn.linear_model import (LinearRegression, 
-                                  Lasso, 
+from sklearn.linear_model import (LinearRegression,
+                                  Lasso,
                                   Ridge,
                                   ElasticNet)
 
@@ -22,7 +22,7 @@ class LinearRegressionModel(MLBaseRegression):
 # Lasso Regression Model
 class LassoModel(MLBaseRegression):
     """Lasso regression model implementation."""
-    
+
     def define_model(self):
         """Defines the Lasso model with the default configuration."""
         return Lasso()
@@ -34,7 +34,7 @@ class LassoModel(MLBaseRegression):
 # Ridge Regression Model
 class RidgeModel(MLBaseRegression):
     """Ridge regression model implementation."""
-    
+
     def define_model(self):
         """Defines the Ridge model with the default configuration."""
         return Ridge()
@@ -46,7 +46,7 @@ class RidgeModel(MLBaseRegression):
 # ElasticNet Regression Model
 class ElasticNetModel(MLBaseRegression):
     """ElasticNet regression model implementation."""
-    
+
     def define_model(self):
         """Defines the ElasticNet model with the default configuration."""
         return ElasticNet()
@@ -62,7 +62,7 @@ class ElasticNetModel(MLBaseRegression):
 # SVR Model
 class SVRModel(MLBaseRegression):
     """Support Vector Regression (SVR) model implementation."""
-    
+
     def define_model(self):
         """Defines the SVR model with the default configuration."""
         return SVR()

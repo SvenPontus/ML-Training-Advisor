@@ -11,7 +11,7 @@ from ml_base_classification import MLBaseClassification
 # Logistic Regression Model
 class LogisticRegressionModel(MLBaseClassification):
     """Logistic Regression model implementation."""
-    
+
     def define_model(self):
         """Defines the Logistic Regression model."""
         return LogisticRegression() 
@@ -40,7 +40,7 @@ class KNNModel(MLBaseClassification):
 # SVC Model
 class SVCModel(MLBaseClassification):
     """Support Vector Classifier (SVC) model implementation."""
-    
+
     def define_model(self):
         """Defines the SVC model."""
         return SVC()
@@ -53,4 +53,3 @@ class SVCModel(MLBaseClassification):
             'model__degree': np.arange(1, 9),
             'model__gamma': ['scale', 'auto']
         }
-

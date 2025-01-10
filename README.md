@@ -1,2 +1,1 @@
-# project_1
-effektiv_python_project_1
+This program was developed as a school project. It is a machine learning application that can select the most suitable algorithm for your data.
