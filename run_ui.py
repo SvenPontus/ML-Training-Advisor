@@ -146,7 +146,6 @@ class RunUI():
             accuracy_SVCM, model_SVCM, str_SVCM = self.auto_use_model(
                 SVCM, X, y, "Support Vector Classifier (SVC)"
             )
-            # The time is limited...
             # accuracy_ANN = self.auto_use_model(ANN(
             # loss='categorical_crossentropy'), X, y) .
             best_model_name, best_accuracy = self.calculate_best_accuracy_score(

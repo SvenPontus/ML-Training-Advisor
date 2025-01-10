@@ -12,6 +12,7 @@ from regressor_models import (LinearRegressionModel as LRM,
 from data_processing import DataProcessing as DP
 
 class TestMlRegressor(unittest.TestCase):
+    """Test cases for the regressor models."""
 
     def setUp(self):
         self.df = DP("Adv.csv")

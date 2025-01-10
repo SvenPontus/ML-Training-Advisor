@@ -7,7 +7,6 @@ from sklearn.svm import SVC
 from ml_base_classification import MLBaseClassification
 
 
-
 # Logistic Regression Model
 class LogisticRegressionModel(MLBaseClassification):
     """Logistic Regression model implementation."""

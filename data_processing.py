@@ -53,7 +53,7 @@ class DataProcessing:
             y = self.df.iloc[:, target_column_index]
             X = self.df.drop(self.df.columns[target_column_index], axis=1)
             
-            # Handle categorical columns (non-numeric)... get dummies auto?...Wrong way...
+            # Handle categorical columns (non-numeric)
             non_numeric_columns = [col for col in X.columns if 
                                    not pd.api.types.is_numeric_dtype(X[col])]
             for col in non_numeric_columns:

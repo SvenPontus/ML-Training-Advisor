@@ -10,10 +10,11 @@ from classifier_models import (LogisticRegressionModel as LoRM,
 from data_processing import DataProcessing as DP
 
 class TestMlClassifier(unittest.TestCase):
+    """Test cases for the classifier models."""
 
     def setUp(self):
         """Initial setup before each test."""
-        self.df = DP("multi_c_test.csv")
+        self.df = DP("multi_c_test.csv") # import the csv file
         self.df.read_csv()
         self.X, self.y = self.df.prepare_for_ml(4) 
 
